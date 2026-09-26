@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
 import 'package:smart_academy/features/admin/widgets/edit_student_modal.dart';
+import 'package:smart_academy/views/student_attendance_days_view.dart';
 
 class StudentDetailView extends StatelessWidget {
   final AdminProvider provider;
@@ -85,10 +86,41 @@ class StudentDetailView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward),
+                  const SizedBox(width: 16),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.grey[200],
+                    backgroundImage: student['photo_url'] != null && student['photo_url'].toString().isNotEmpty
+                        ? NetworkImage(student['photo_url'])
+                        : null,
+                    child: student['photo_url'] == null || student['photo_url'].toString().isEmpty
+                        ? Text(
+                            (student['full_name'] ?? '?')[0],
+                            style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 20),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(width: 16),
+                  TextButton(
                     onPressed: () => provider.selectStudent(null),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'عودة',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.arrow_forward, color: Colors.black87),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -170,12 +202,25 @@ class StudentDetailView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildCountColumn('غـياب', '$absentCount'),
-                      _buildCountColumn('حضور', '$presentCount'),
+                      _buildCountColumn(
+                        context: context,
+                        label: 'غُياب',
+                        value: '$absentCount',
+                        isPresent: false,
+                        student: student,
+                      ),
+                      _buildCountColumn(
+                        context: context,
+                        label: 'حضور',
+                        value: '$presentCount',
+                        isPresent: true,
+                        student: student,
+                      ),
                     ],
                   ),
                 ),
               ),
+
             ],
           ),
         ],
@@ -214,7 +259,7 @@ class StudentDetailView extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         // استخدام درجة أزرق خفيفة وهادئة مع انحناء خفيف وبوردر لطيف
-        color: const Color(0xFF4A729A),
+        color: const Color(0xFF724F96),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -236,13 +281,42 @@ class StudentDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildCountColumn(String label, String value) {
-    return Column(
-      children: [
-        Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-      ],
+  Widget _buildCountColumn({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required bool isPresent,
+    required Map<String, dynamic> student,
+  }) {
+    final color = isPresent ? Colors.green : Colors.red;
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => StudentAttendanceDaysView(
+              studentId: student['id'].toString(),
+              studentName: student['full_name'] ?? '',
+              showPresent: isPresent,
+            ),
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color)),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.touch_app_rounded, size: 11, color: Colors.grey.shade400),
+              const SizedBox(width: 3),
+              Text('اضغط للتفاصيل', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

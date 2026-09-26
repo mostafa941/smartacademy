@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
 import 'package:smart_academy/features/admin/widgets/add_student_modal.dart';
+import 'package:smart_academy/views/teacher_attendance_days_view.dart';
 
 class TeacherDetailView extends StatefulWidget {
   final AdminProvider provider;
@@ -49,6 +50,20 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       onPressed: () => widget.provider.clearSelectedTeacher(),
                     ),
                     const SizedBox(width: 8),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: teacher['avatar_url'] != null && teacher['avatar_url'].toString().isNotEmpty
+                          ? NetworkImage(teacher['avatar_url'])
+                          : null,
+                      child: teacher['avatar_url'] == null || teacher['avatar_url'].toString().isEmpty
+                          ? Text(
+                              teacherName.isNotEmpty ? teacherName[0] : '?',
+                              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 20),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -75,7 +90,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE8F4FF),
+                                color: const Color(0xFFE6E6FA),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -99,7 +114,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                   children: [
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0F3C5C),
+                        backgroundColor: const Color(0xFF2A1B38),
                         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -144,9 +159,22 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
             Row(
               children: [
                 Expanded(
-                  child: _buildStatCard(
-                    title: 'أيام الحضور',
-                    value: widget.provider.teacherAttendanceCount.toString(),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => TeacherAttendanceDaysView(
+                            teacherId: teacher['id'].toString(),
+                            teacherName: teacherName,
+                          ),
+                        ),
+                      );
+                    },
+                    child: _buildStatCard(
+                      title: 'أيام الحضور',
+                      value: widget.provider.teacherAttendanceCount.toString(),
+                      isClickable: true,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -171,7 +199,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
   }
 
   // كرت الإحصائيات
-  Widget _buildStatCard({required String title, required String value}) {
+  Widget _buildStatCard({required String title, required String value, bool isClickable = false}) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -188,13 +216,20 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (isClickable)
+                const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Text(
@@ -216,7 +251,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFE3F2FD).withOpacity(0.5),
+        color: const Color(0xFFE6E6FA).withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -294,7 +329,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F4FF).withOpacity(0.6),
+        color: const Color(0xFFE6E6FA).withOpacity(0.6),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -316,7 +351,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 children: [
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F3C5C),
+                      backgroundColor: const Color(0xFF2A1B38),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -335,22 +370,27 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                     },
                   ),
                   const SizedBox(width: 12),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
+                  TextButton(
+                    style: TextButton.styleFrom(
                       backgroundColor: Colors.transparent,
-                      side: BorderSide.none,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    ),
-                    icon: const Icon(Icons.undo, color: Colors.black87, size: 18),
-                    label: const Text(
-                      'عودة',
-                      style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
                       setState(() {
                         _selectedStage = null;
                       });
                     },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'عودة',
+                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.undo, color: Colors.black87, size: 18),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -377,7 +417,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 children: [
                   // العناوين
                   Container(
-                    color: const Color(0xFF0B192C),
+                    color: const Color(0xFF2A1B38),
                     padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                     child: const Row(
                       children: [
@@ -458,7 +498,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFE3F2FD),
+                                      color: const Color(0xFFE6E6FA),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
@@ -506,7 +546,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                                   alignment: Alignment.centerRight,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFE8F4FF),
+                                      backgroundColor: const Color(0xFFE6E6FA),
                                       elevation: 0,
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                       shape: RoundedRectangleBorder(
@@ -604,7 +644,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0F3C5C),
+                backgroundColor: const Color(0xFF2A1B38),
               ),
               onPressed: () async {
                 final stagesList = ageGroupsController.text

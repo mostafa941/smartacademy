@@ -141,7 +141,7 @@ class _AddStudentModalState extends State<AddStudentModal> {
                   Expanded(
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE8F4FF),
+                        backgroundColor: const Color(0xFFE6E6FA),
                         side: BorderSide.none,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

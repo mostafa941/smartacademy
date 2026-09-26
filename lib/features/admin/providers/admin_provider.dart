@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AdminProvider extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -463,11 +465,83 @@ class AdminProvider extends ChangeNotifier {
     required String ageGroup,
   }) async {
     try {
-      await _supabase.from('students').insert({
+      // 1. إضافة الطالب واسترجاع بياناته
+      final studentRes = await _supabase.from('students').insert({
         'full_name': fullName,
         'parent_phone': parentPhone,
         'age_group': ageGroup,
-      });
+      }).select().single();
+
+      final studentId = studentRes['id'];
+
+      // 2. جلب المرحلة من جدول stages للحصول على stage_id
+      final stageRes = await _supabase
+          .from('stages')
+          .select('id')
+          .eq('name', ageGroup.trim())
+          .maybeSingle();
+
+      if (stageRes != null) {
+        final stageId = stageRes['id'];
+
+        // 3. جلب المعلمين المرتبطين بهذه المرحلة مباشرة من teacher_stages
+        final teacherStagesRes = await _supabase
+            .from('teacher_stages')
+            .select('teacher_id')
+            .eq('stage_id', stageId);
+
+        final List<String> teacherIds = (teacherStagesRes as List)
+            .map((e) => e['teacher_id'].toString())
+            .toList();
+
+        if (teacherIds.isNotEmpty) {
+          // 4. إنشاء إشعارات لهؤلاء المعلمين في Supabase
+          final notificationsToInsert = teacherIds.map((teacherId) {
+            return {
+              'teacher_id': teacherId,
+              'title': 'طالب جديد',
+              'body': 'تم إضافة الطالب $fullName إلى مرحلة $ageGroup',
+              'student_id': studentId,
+              'is_read': false,
+            };
+          }).toList();
+
+          await _supabase.from('notifications').insert(notificationsToInsert);
+          debugPrint('Notifications sent to ${teacherIds.length} teachers for: $fullName');
+
+          // 5. إرسال Push Notification عبر OneSignal (REST API) - اختياري
+          const String oneSignalAppId = "YOUR_ONESIGNAL_APP_ID";
+          const String restApiKey = "YOUR_ONESIGNAL_REST_API_KEY";
+
+          if (oneSignalAppId != "YOUR_ONESIGNAL_APP_ID") {
+            try {
+              await http.post(
+                Uri.parse('https://onesignal.com/api/v1/notifications'),
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8',
+                  'Authorization': 'Basic $restApiKey',
+                },
+                body: jsonEncode({
+                  'app_id': oneSignalAppId,
+                  'include_external_user_ids': teacherIds,
+                  'channel_for_external_user_ids': 'push',
+                  'headings': {'en': 'طالب جديد', 'ar': 'طالب جديد'},
+                  'contents': {
+                    'en': 'تم إضافة الطالب $fullName إلى مرحلة $ageGroup',
+                    'ar': 'تم إضافة الطالب $fullName إلى مرحلة $ageGroup',
+                  },
+                }),
+              );
+            } catch (pushErr) {
+              debugPrint('Error sending OneSignal push: $pushErr');
+            }
+          }
+        } else {
+          debugPrint('No teachers found for stage: $ageGroup');
+        }
+      } else {
+        debugPrint('Stage not found in DB: $ageGroup — no notifications sent');
+      }
 
       await fetchDashboardData();
       return true;
@@ -476,6 +550,7 @@ class AdminProvider extends ChangeNotifier {
       return false;
     }
   }
+
 
   Future<bool> updateStudent({
     required dynamic id,

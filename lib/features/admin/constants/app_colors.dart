@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color sidebarBg = Color(0xFF013480);
-  static const Color bodyBg = Color(0xFFD8F1FF);
-  static const Color adminBadgeBg = Color(0xFFA7C6F5);
-  static const Color adminBadgeBorder = Color(0xFF7091FF);
-  static const Color activeNavBg = Color(0xFFD8F1FF);
-  static const Color activeNavText = Color(0xFF013480);
-  static const Color addBtnBg = Color(0xFF01063A);
-  static const Color modalBorder = Color(0xFF013480);
+  static const Color sidebarBg = Color.fromRGBO(114, 79, 150, 0.993);
+  static const Color bodyBg = Color.fromRGBO(230, 230, 250, 0.984);
+  static const Color adminBadgeBg = Color(0xFFE6E6FA);
+  static const Color adminBadgeBorder = Color.fromRGBO(114, 79, 150, 0.993);
+  static const Color activeNavBg = Color.fromRGBO(230, 230, 250, 0.984);
+  static const Color activeNavText = Color.fromRGBO(114, 79, 150, 0.993);
+  static const Color addBtnBg = Color.fromRGBO(114, 79, 150, 0.993);
+  static const Color modalBorder = Color.fromRGBO(114, 79, 150, 0.993);
 }

@@ -150,14 +150,36 @@ class TeachersView extends StatelessWidget {
                               // 1. اسم المدرس
                               Expanded(
                                 flex: 3,
-                                child: Text(
-                                  teacher['full_name'] ?? '',
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Colors.black87,
-                                  ),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: const Color(0xFFE6E6FA),
+                                      backgroundImage: teacher['avatar_url'] != null && teacher['avatar_url'].toString().isNotEmpty
+                                          ? NetworkImage(teacher['avatar_url'])
+                                          : null,
+                                      child: (teacher['avatar_url'] == null || teacher['avatar_url'].toString().isEmpty)
+                                          ? Text(
+                                              (teacher['full_name'] != null && teacher['full_name'].toString().isNotEmpty)
+                                                  ? teacher['full_name'][0]
+                                                  : '?',
+                                              style: const TextStyle(color: AppColors.sidebarBg, fontWeight: FontWeight.bold, fontSize: 12),
+                                            )
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        teacher['full_name'] ?? '',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
@@ -205,7 +227,7 @@ class TeachersView extends StatelessWidget {
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFE8F4FF),
+                                      backgroundColor: const Color(0xFFE6E6FA),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(6),
                                       ),
@@ -243,7 +265,7 @@ class TeachersView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F4FF),
+        color: const Color(0xFFE6E6FA),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

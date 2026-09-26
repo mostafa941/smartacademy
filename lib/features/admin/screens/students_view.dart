@@ -98,7 +98,30 @@ class StudentsView extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              Expanded(flex: 2, child: Text(student['full_name'] ?? 'بدون اسم', style: const TextStyle(fontWeight: FontWeight.w600))),
+                              Expanded(
+                                flex: 2, 
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: const Color(0xFFE6E6FA),
+                                      backgroundImage: student['photo_url'] != null && student['photo_url'].toString().isNotEmpty
+                                          ? NetworkImage(student['photo_url'])
+                                          : null,
+                                      child: (student['photo_url'] == null || student['photo_url'].toString().isEmpty)
+                                          ? Text(
+                                              (student['full_name'] != null && student['full_name'].toString().isNotEmpty)
+                                                  ? student['full_name'][0]
+                                                  : '?',
+                                              style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 10),
+                                            )
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(child: Text(student['full_name'] ?? 'بدون اسم', style: const TextStyle(fontWeight: FontWeight.w600))),
+                                  ],
+                                ),
+                              ),
                               Expanded(flex: 1, child: Align(alignment: Alignment.centerRight, child: _buildTag(student['age_group'] ?? 'Baby Class'))),
                               Expanded(flex: 2, child: Text(student['parent_phone'] ?? '01000000000')),
                               Expanded(flex: 2, child: _buildAttendanceBadge(attendanceRate)),
@@ -106,7 +129,7 @@ class StudentsView extends StatelessWidget {
                                 flex: 1,
                                 child: OutlinedButton(
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFE8F4FF),
+                                    backgroundColor: const Color(0xFFE6E6FA),
                                     side: BorderSide.none,
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                   ),
@@ -134,7 +157,7 @@ class StudentsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F4FF),
+        color: const Color(0xFFE6E6FA),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
