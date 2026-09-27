@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'core/device/device_platform.dart';
 import 'features/admin/constants/supabase_constants.dart';
 import 'features/splash/screens/splash_screen.dart';
 
@@ -41,12 +42,11 @@ class SmartAcademyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. إذا كان التصفح من الويب -> يفتح لوحة الأدمن مباشرة
-    if (kIsWeb) {
+    // الويب من كمبيوتر/لابتوب → لوحة الأدمن. الويب من موبايل → تطبيق الطالب/المعلم.
+    if (kIsWeb && shouldShowAdminPanel()) {
       return _buildAdminApp();
     }
 
-    // 2. إذا كان تشغيل تطبيق على الموبايل -> يفتح واجهة الطالب والمعلم
     return _buildMobileApp(context);
   }
 
