@@ -28,7 +28,11 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+
+# Ignore all build contents EXCEPT for web release build for Vercel
+/build/*
+!/build/web/
+
 /coverage/
 
 # Android / iOS Build & Caches
@@ -52,7 +56,7 @@ migrate_working_dir/
 *.dmg
 *.iso
 
-# Prevent uploading large media files (Adjust if you specifically need any in assets)
+# Prevent uploading large media files
 *.mp4
 *.mov
 *.avi
@@ -61,4 +65,4 @@ migrate_working_dir/
 
 # Symbolication & Obfuscation related
 app.*.symbols
-app.*.map.json
+app.*.map.json 
