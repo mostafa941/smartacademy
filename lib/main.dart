@@ -8,15 +8,10 @@ import 'features/admin/constants/supabase_constants.dart';
 import 'features/splash/screens/splash_screen.dart';
 
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'providers/theme_provider.dart';
 
-// استخدام deferred as لتحميل شاشات الأدمن فقط عند الحاجة إليها
+// استخدام deferred as لتحميل شاشات الأدمن عند الحاجة إليها على الويب
 import 'features/admin/admin_app.dart' deferred as adminModule;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// نقطة الدخول الرئيسية
-// ─────────────────────────────────────────────────────────────────────────────
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +21,7 @@ void main() async {
     anonKey: SupabaseConstants.supabaseAnonKey,
   );
 
-  // إعداد OneSignal (Push Notifications)
-  // يرجى استبدال YOUR_ONESIGNAL_APP_ID بمعرف التطبيق الحقيقي لاحقاً
+  // إعداد الإشعارات للموبايل فقط
   if (!kIsWeb) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
     OneSignal.initialize("YOUR_ONESIGNAL_APP_ID");
@@ -42,132 +36,36 @@ void main() async {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// تحديد نوع الشاشة الافتراحية بناءً على المنصة والمسار
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// يُعيد true إذا كان التطبيق يُشغَّل عبر المتصفح وكان المسار يحتوي على /admin
-bool get _isAdminRoute {
-  if (!kIsWeb) return false;
-  // Uri.base متاح فقط على الويب - في البيئات الأخرى يعود false من kIsWeb
-  try {
-    final path = Uri.base.path;
-    return path.contains('/admin');
-  } catch (_) {
-    return false;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// التطبيق الرئيسي
-// ─────────────────────────────────────────────────────────────────────────────
-
 class SmartAcademyApp extends StatelessWidget {
   const SmartAcademyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (_isAdminRoute) {
+    // 1. إذا كان التصفح من الويب -> يفتح لوحة الأدمن مباشرة
+    if (kIsWeb) {
       return _buildAdminApp();
     }
-    
-    // إذا تم فتح التطبيق على الويب ولم يكن الرابط /admin، نعرض صفحة التحميل
-    if (kIsWeb) {
-      return _buildWebDownloadPage();
-    }
 
+    // 2. إذا كان تشغيل تطبيق على الموبايل -> يفتح واجهة الطالب والمعلم
     return _buildMobileApp(context);
   }
 
-  // ── صفحة التحميل على الويب ───────────────────────────────────────────────────
-  Widget _buildWebDownloadPage() {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Smart Academy',
-      home: Scaffold(
-        backgroundColor: const Color(0xFFE6E6FA),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'SMART',
-                  style: TextStyle(
-                    color: Color(0xFF2A1B38),
-                    fontSize: 64,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'smart_font',
-                    letterSpacing: 2,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                const Text(
-                  'تطبيق الطالب والمعلم متاح فقط على الهواتف الذكية.',
-                  style: TextStyle(
-                    color: Color(0xFF2A1B38),
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'يرجى تحميل التطبيق وتثبيته على هاتفك للتمتع بكافة الميزات.',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    // قم بتغيير هذا الرابط برابط التحميل الفعلي لملف الـ APK
-                    final Uri url = Uri.parse('https://your-domain.com/app-release.apk');
-                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                      debugPrint('Could not launch $url');
-                    }
-                  },
-                  icon: const Icon(Icons.android, size: 28),
-                  label: const Text('تحميل تطبيق الأندرويد (APK)'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF724F96),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                    textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── تطبيق الأدمن (Web /admin) ──────────────────────────────────────────────
+  // ── واجهة الأدمن (للويب) ───────────────────────────────────────────────────
   Widget _buildAdminApp() {
     return FutureBuilder(
       future: adminModule.loadLibrary(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          // بمجرد التحميل، نعرض واجهة الأدمن
           return adminModule.AdminApp();
         }
         
-        // أثناء التحميل نعرض شاشة بسيطة
         return const MaterialApp(
           debugShowCheckedModeBanner: false,
           home: Scaffold(
-            backgroundColor: Color(0xFFE6E6FA), // AppColors.bodyBg
+            backgroundColor: Color(0xFFE6E6FA),
             body: Center(
               child: CircularProgressIndicator(
-                color: Color(0xFF724F96), // AppColors.sidebarBg
+                color: Color(0xFF724F96),
               ),
             ),
           ),
@@ -176,7 +74,7 @@ class SmartAcademyApp extends StatelessWidget {
     );
   }
 
-  // ── تطبيق الموبايل / PWA (الشاشة الافتراضية) ─────────────────────────────
+  // ── واجهة الموبايل (طالب / معلم) ──────────────────────────────────────────
   Widget _buildMobileApp(BuildContext context) {
     final isDark = context.watch<ThemeProvider>().isDarkMode;
     
@@ -192,15 +90,13 @@ class SmartAcademyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('ar', ''), // Arabic
+        Locale('ar', ''),
       ],
       locale: const Locale('ar', ''),
-      // نبدأ دائماً من SplashScreen على الموبايل والويب العام
       home: const SplashScreen(),
     );
   }
 
-  // ── Theme الموبايل ────────────────────────────────────────────────────────
   ThemeData _mobileTheme() {
     return ThemeData(
       colorSchemeSeed: const Color.fromRGBO(114, 79, 150, 0.993),
@@ -208,7 +104,6 @@ class SmartAcademyApp extends StatelessWidget {
       brightness: Brightness.light,
       useMaterial3: true,
       fontFamily: 'Roboto',
-
     );
   }
 
@@ -216,24 +111,9 @@ class SmartAcademyApp extends StatelessWidget {
     return ThemeData(
       colorSchemeSeed: const Color.fromRGBO(114, 79, 150, 0.993),
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF0F172A), // Dark navy
+      scaffoldBackgroundColor: const Color(0xFF0F172A),
       useMaterial3: true,
       fontFamily: 'Roboto',
-      textTheme: const TextTheme(
-        bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white),
-        displayLarge: TextStyle(color: Colors.white),
-        displayMedium: TextStyle(color: Colors.white),
-        displaySmall: TextStyle(color: Colors.white),
-        headlineMedium: TextStyle(color: Colors.white),
-        headlineSmall: TextStyle(color: Colors.white),
-        titleLarge: TextStyle(color: Colors.white),
-        titleMedium: TextStyle(color: Colors.white),
-        titleSmall: TextStyle(color: Colors.white),
-        labelLarge: TextStyle(color: Colors.white),
-        bodySmall: TextStyle(color: Colors.white),
-        labelSmall: TextStyle(color: Colors.white),
-      ),
     );
   }
 }
