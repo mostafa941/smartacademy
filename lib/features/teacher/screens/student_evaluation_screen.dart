@@ -8,6 +8,9 @@ class StudentEvaluationScreen extends StatefulWidget {
   final String category;
   final String initial;
   final String? photoUrl;
+  final String teacherName;
+  final String? teacherAvatarUrl;
+  final String teacherSubject;
 
   const StudentEvaluationScreen({
     super.key,
@@ -17,6 +20,9 @@ class StudentEvaluationScreen extends StatefulWidget {
     required this.category,
     required this.initial,
     this.photoUrl,
+    required this.teacherName,
+    this.teacherAvatarUrl,
+    this.teacherSubject = 'غير محدد',
   });
 
   @override
@@ -161,7 +167,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             'teacher_name': teacherName,
             if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
               'teacher_photo_url': teacherPhotoUrl,
-            'subject': widget.category.isNotEmpty ? widget.category : 'يومي',
           }).eq('id', existingReport['id']);
 
           // Send absence notification if marked absent
@@ -188,7 +193,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             'teacher_name': teacherName,
             if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
               'teacher_photo_url': teacherPhotoUrl,
-            'subject': widget.category.isNotEmpty ? widget.category : 'يومي',
           });
 
           // Send absence notification if marked absent
@@ -238,7 +242,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           if (existingReview != null) {
             await _supabase.from('student_reviews').update({
               'teacher_name': teacherName,
-              'subject': widget.category.isNotEmpty ? widget.category : 'يومي',
               'notes': noteText,
               'behavior_rating': dailyStars >= 4
                   ? 'مميز'
@@ -255,7 +258,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               'student_id': widget.studentId,
               'review_date': todayStr,
               'teacher_name': teacherName,
-              'subject': widget.category.isNotEmpty ? widget.category : 'يومي',
               'notes': noteText,
               'behavior_rating': dailyStars >= 4
                   ? 'مميز'
@@ -284,7 +286,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           'teacher_name': teacherName,
           if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
             'teacher_photo_url': teacherPhotoUrl,
-          'subject': widget.category.isNotEmpty ? widget.category : 'أسبوعي',
         });
       } catch (_) {
         // Table might not exist, ignore
@@ -394,6 +395,72 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Teacher Info Card
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF3EEFF),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: isDark
+                        ? const Color(0xFF2A2A2A)
+                        : const Color(0xFFDDD0F7),
+                    backgroundImage: widget.teacherAvatarUrl != null &&
+                            widget.teacherAvatarUrl!.isNotEmpty
+                        ? NetworkImage(widget.teacherAvatarUrl!)
+                        : null,
+                    child: widget.teacherAvatarUrl == null ||
+                            widget.teacherAvatarUrl!.isEmpty
+                        ? Text(
+                            widget.teacherName.isNotEmpty
+                                ? widget.teacherName[0]
+                                : 'م',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.teacherName,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.teacherSubject,
+                        style: const TextStyle(
+                          color: Color(0xFF724F96),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.school_rounded,
+                    color: Color(0xFF724F96),
+                    size: 18,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),

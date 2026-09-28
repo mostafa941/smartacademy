@@ -191,6 +191,7 @@ class AdminProvider extends ChangeNotifier {
         id,
         full_name,
         phone,
+        avatar_url,
         teacher_stages (
           stages ( name )
         ),
@@ -216,6 +217,7 @@ class AdminProvider extends ChangeNotifier {
           'id': t['id'],
           'full_name': t['full_name'] ?? '',
           'phone': t['phone'] ?? '',
+          'avatar_url': t['avatar_url'],
           'age_group': stageNames.isNotEmpty ? stageNames.join(', ') : 'غير محدد',
           'subject': subjectNames.isNotEmpty ? subjectNames.join(', ') : 'غير محدد',
         };

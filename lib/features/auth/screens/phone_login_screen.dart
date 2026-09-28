@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'home_screen.dart';
 import '../services/session_service.dart';
+import '../widgets/complaint_dialog.dart';
 
 class PhoneLoginScreen extends StatefulWidget {
   final String role; // 'teacher' or 'student'
@@ -160,13 +161,16 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                 // زر الرجوع
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Color(0xFF2A1B38),
-                      size: 28,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(12),
+                      alignment: Alignment.center,
                     ),
+                    child: const Icon(Icons.arrow_back, size: 25),
                   ),
                 ),
 
@@ -318,12 +322,21 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                 const SizedBox(height: 24),
 
                 // Help text
-                const Text(
-                  'تحتاج مساعدة ؟',
-                  style: TextStyle(
-                    color: Color(0xFF2A1B38),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const ComplaintDialog(),
+                    );
+                  },
+                  child: const Text(
+                    'تحتاج مساعدة ؟',
+                    style: TextStyle(
+                      color: Color(0xFF2A1B38),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
 

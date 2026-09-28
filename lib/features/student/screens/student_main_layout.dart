@@ -10,6 +10,7 @@ import 'student_settings_tab.dart';
 import 'student_profile_tab.dart';
 import 'notifications_screen.dart';
 import '../providers/notifications_provider.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class StudentMainLayout extends StatefulWidget {
   final String userId;
@@ -74,9 +75,7 @@ class _StudentMainLayoutState extends State<StudentMainLayout> {
           if (provider.isLoading && provider.student == null) {
             return Scaffold(
               backgroundColor: bgColor,
-              body: const Center(
-                child: CircularProgressIndicator(color: Color(0xFF724F96)),
-              ),
+              body: const SkeletonCardLoading(),
             );
           }
 

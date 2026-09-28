@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/admin_provider.dart';
 import 'screens/admin_login_screen.dart';
 import 'screens/admin_dashboard_screen.dart';
+import '../../core/widgets/connectivity_wrapper.dart';
 
 class AdminApp extends StatelessWidget {
   const AdminApp({super.key});
@@ -36,7 +37,9 @@ class AdminApp extends StatelessWidget {
           Locale('ar', ''), // Arabic
         ],
         locale: const Locale('ar', ''),
-        home: hasSession ? const AdminDashboardScreen() : const AdminLoginScreen(),
+        home: ConnectivityWrapper(
+          child: hasSession ? const AdminDashboardScreen() : const AdminLoginScreen(),
+        ),
       ),
     );
   }

@@ -25,9 +25,14 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
   String _searchQuery = '';
   RealtimeChannel? _studentsChannel;
 
+  // بيانات المدرس
+  String _teacherSubject = 'غير محدد';
+  String? _teacherAvatarUrl;
+
   @override
   void initState() {
     super.initState();
+    _fetchTeacherInfo();
     _fetchStudents();
     _setupRealtimeStudents();
   }
@@ -51,6 +56,40 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
   void dispose() {
     _studentsChannel?.unsubscribe();
     super.dispose();
+  }
+
+  Future<void> _fetchTeacherInfo() async {
+    try {
+      // جلب avatar_url من profiles
+      final profileRes = await _supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', widget.userId)
+          .maybeSingle();
+
+      // جلب المادة من teacher_subjects
+      final subjectRes = await _supabase
+          .from('teacher_subjects')
+          .select('subjects(name)')
+          .eq('teacher_id', widget.userId);
+
+      final List subjectList = subjectRes as List;
+      final subjectNames = subjectList
+          .map((s) => s['subjects']?['name']?.toString() ?? '')
+          .where((n) => n.isNotEmpty)
+          .toList();
+
+      if (mounted) {
+        setState(() {
+          _teacherAvatarUrl = profileRes?['avatar_url'] as String?;
+          _teacherSubject = subjectNames.isNotEmpty
+              ? subjectNames.join(', ')
+              : 'غير محدد';
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching teacher info: $e');
+    }
   }
 
   Future<void> _fetchStudents() async {
@@ -244,6 +283,9 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                                     category: category,
                                     initial: initial,
                                     photoUrl: student['photo_url'] as String?,
+                                    teacherName: widget.userName,
+                                    teacherAvatarUrl: _teacherAvatarUrl,
+                                    teacherSubject: _teacherSubject,
                                   ),
                                 ),
                               );

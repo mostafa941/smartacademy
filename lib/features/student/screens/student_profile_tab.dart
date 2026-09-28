@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 import '../../../providers/theme_provider.dart';
 import '../providers/student_provider.dart';
 import '../../../services/cloudinary_service.dart';
@@ -77,7 +78,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
     final student = provider.student;
 
     if (student == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonProfileLoading();
     }
 
     if (student.name.trim().isEmpty) {

@@ -16,7 +16,16 @@ class _AddTeacherModalState extends State<AddTeacherModal> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _subjectController = TextEditingController();
+
+  String? _selectedSubject;
+  final List<String> _subjects = [
+    'English',
+    'Math',
+    'UcMath',
+    'عربي',
+    'حساب',
+    'قرأن و سلوكيات و أداب',
+  ];
 
   // قائمة الفئات المختارة
   final List<String> _selectedAgeGroups = [];
@@ -32,7 +41,6 @@ class _AddTeacherModalState extends State<AddTeacherModal> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _subjectController.dispose();
     super.dispose();
   }
 
@@ -55,7 +63,7 @@ class _AddTeacherModalState extends State<AddTeacherModal> {
       final success = await widget.provider.addTeacher(
         fullName: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
-        subject: _subjectController.text.trim(),
+        subject: _selectedSubject ?? '',
         ageGroups: _selectedAgeGroups,
       );
 
@@ -173,12 +181,31 @@ class _AddTeacherModalState extends State<AddTeacherModal> {
               // المادة الدراسية
               _buildFieldLabel('المادة الدراسية:'),
               const SizedBox(height: 6),
-              TextFormField(
-                controller: _subjectController,
-                textAlign: TextAlign.right,
+              DropdownButtonFormField<String>(
+                value: _selectedSubject,
+                alignment: AlignmentDirectional.centerEnd,
+                items: _subjects.map((subject) {
+                  return DropdownMenuItem(
+                    value: subject,
+                    child: Text(
+                      subject,
+                      style: const TextStyle(
+                        fontFamily: 'smart_font',
+                        color: Color(0xFF2A1B38),
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedSubject = val;
+                  });
+                },
                 validator: (val) =>
-                    val == null || val.isEmpty ? 'برجاء إدخال المادة الدراسية' : null,
+                    val == null || val.isEmpty ? 'برجاء اختيار المادة الدراسية' : null,
                 decoration: _inputDecoration(''),
+                icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF724F96)),
+                dropdownColor: Colors.white,
               ),
               const SizedBox(height: 16),
 

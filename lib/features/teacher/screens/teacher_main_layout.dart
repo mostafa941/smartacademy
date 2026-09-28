@@ -202,7 +202,10 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            NotificationsScreen(teacherId: widget.userId),
+                            NotificationsScreen(
+                              teacherId: widget.userId,
+                              teacherName: widget.userName,
+                            ),
                       ),
                     );
                     _fetchUnreadCount();

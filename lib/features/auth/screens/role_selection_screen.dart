@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'phone_login_screen.dart';
+import '../widgets/complaint_dialog.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
@@ -49,7 +50,26 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+              // زر الرجوع
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(12),
+                      alignment: Alignment.center,
+                    ),
+                    child: const Icon(Icons.arrow_back, size: 25),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
               // Header Logo
               Stack(
                 clipBehavior: Clip.none,
@@ -150,12 +170,21 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
               const SizedBox(height: 20),
               
               // Help Text
-              const Text(
-                'تحتاج مساعدة ؟',
-                style: TextStyle(
-                  color: Color(0xFF2A1B38),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const ComplaintDialog(),
+                  );
+                },
+                child: const Text(
+                  'تحتاج مساعدة ؟',
+                  style: TextStyle(
+                    color: Color(0xFF2A1B38),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

@@ -84,6 +84,12 @@ class SidebarWidget extends StatelessWidget {
             isSelected: provider.selectedNavIndex == 3,
             onTap: () => provider.setNavIndex(3),
           ),
+          _buildNavItem(
+            icon: Icons.report_problem_outlined,
+            title: 'الشكاوي',
+            isSelected: provider.selectedNavIndex == 4,
+            onTap: () => provider.setNavIndex(4),
+          ),
           const Spacer(),
           InkWell(
             onTap: () {

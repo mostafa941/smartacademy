@@ -11,6 +11,8 @@ import 'students_view.dart';
 import 'package:smart_academy/views/teachers_view.dart';
 import 'package:smart_academy/views/student_detail_view.dart';
 import 'package:smart_academy/views/settings_view.dart';
+import 'complaints_view.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -45,6 +47,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         return TeachersView(provider: provider);
       case 3:
         return SettingsView(provider: provider);
+      case 4:
+        return ComplaintsView(provider: provider);
       default:
         return DashboardOverviewView(provider: provider);
     }
@@ -68,7 +72,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   HeaderWidget(provider: provider, todayDate: todayDate),
                   Expanded(
                     child: provider.isLoading
-                        ? const Center(child: CircularProgressIndicator())
+                        ? const SkeletonCardLoading()
                         : _buildSelectedScreen(provider),
                   ),
                 ],

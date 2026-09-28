@@ -20,7 +20,16 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
-  late TextEditingController _subjectController;
+
+  String? _selectedSubject;
+  final List<String> _subjects = [
+    'English',
+    'Math',
+    'UcMath',
+    'عربي',
+    'حساب',
+    'قرأن و سلوكيات و أداب',
+  ];
 
   List<String> _selectedAgeGroups = [];
   bool _isLoading = false;
@@ -40,9 +49,14 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
         TextEditingController(text: widget.teacher['phone'] ?? '');
 
     final currentSubject = widget.teacher['subject'] ?? '';
-    _subjectController = TextEditingController(
-      text: currentSubject == 'غير محدد' ? '' : currentSubject,
-    );
+    if (currentSubject.isNotEmpty && currentSubject != 'غير محدد') {
+      if (_subjects.contains(currentSubject)) {
+        _selectedSubject = currentSubject;
+      } else {
+        _subjects.add(currentSubject);
+        _selectedSubject = currentSubject;
+      }
+    }
 
     final currentAgeGroup = widget.teacher['age_group'] ?? '';
     if (currentAgeGroup != 'غير محدد' && currentAgeGroup.isNotEmpty) {
@@ -55,7 +69,6 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _subjectController.dispose();
     super.dispose();
   }
 
@@ -79,7 +92,7 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
         teacherId: widget.teacher['id'],
         fullName: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
-        subject: _subjectController.text.trim(),
+        subject: _selectedSubject ?? '',
         ageGroups: _selectedAgeGroups,
       );
 
@@ -179,12 +192,31 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
                 // المادة الدراسية
                 _buildFieldLabel('المادة الدراسية:'),
                 const SizedBox(height: 6),
-                TextFormField(
-                  controller: _subjectController,
-                  textAlign: TextAlign.right,
+                DropdownButtonFormField<String>(
+                  value: _selectedSubject,
+                  alignment: AlignmentDirectional.centerEnd,
+                  items: _subjects.map((subject) {
+                    return DropdownMenuItem(
+                      value: subject,
+                      child: Text(
+                        subject,
+                        style: const TextStyle(
+                          fontFamily: 'smart_font',
+                          color: Color(0xFF2A1B38),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedSubject = val;
+                    });
+                  },
                   validator: (val) =>
-                      val == null || val.isEmpty ? 'برجاء إدخال المادة الدراسية' : null,
+                      val == null || val.isEmpty ? 'برجاء اختيار المادة الدراسية' : null,
                   decoration: _inputDecoration(''),
+                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF724F96)),
+                  dropdownColor: Colors.white,
                 ),
                 const SizedBox(height: 20),
 

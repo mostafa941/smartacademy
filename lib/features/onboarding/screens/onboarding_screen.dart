@@ -43,10 +43,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const RoleSelectionScreen(),
-        ),
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const RoleSelectionScreen()),
       );
     }
   }
@@ -80,30 +78,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   'SMART',
                   style: TextStyle(
                     color: Color(0xFF2A1B38),
-                    fontSize: 48,
+                    fontSize: 45,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'smart_font',
                     letterSpacing: 2,
                   ),
                 ),
                 Positioned(
-                  top: -25,
-                  right: -55,
+                  top: -15,
+                  right: -60,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       Icon(
                         Icons.star_rounded,
                         color: const Color(0xFF9B6BFF),
-                        size: 90,
+                        size: 120,
                       ),
                       const Text(
                         'SMART',
                         style: TextStyle(
                           color: Color(0xFF2A1B38),
-                          fontSize: 16,
+                          fontSize: 12,
                           fontWeight: FontWeight.w900,
                           fontFamily: 'smart_font',
+                          letterSpacing: 1,
                         ),
                       ),
                     ],
@@ -145,10 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   child: const Text(
                     'next',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -199,7 +195,7 @@ class _OnboardingPageWidget extends StatelessWidget {
             ),
             const SizedBox(height: 30),
           ],
-          
+
           // Raw Image Display
           Image.asset(
             data.imagePath,
@@ -207,7 +203,7 @@ class _OnboardingPageWidget extends StatelessWidget {
             height: 320,
             fit: BoxFit.contain,
           ),
-            
+
           if (data.bottomText != null) ...[
             const SizedBox(height: 30),
             Text(
@@ -230,7 +226,7 @@ class _OnboardingPageWidget extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-            ]
+            ],
           ],
         ],
       ),

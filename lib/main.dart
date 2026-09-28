@@ -5,6 +5,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/device/device_platform.dart';
+import 'core/widgets/connectivity_wrapper.dart';
 import 'features/admin/constants/supabase_constants.dart';
 import 'features/splash/screens/splash_screen.dart';
 
@@ -93,7 +94,7 @@ class SmartAcademyApp extends StatelessWidget {
         Locale('ar', ''),
       ],
       locale: const Locale('ar', ''),
-      home: const SplashScreen(),
+      home: const ConnectivityWrapper(child: SplashScreen()),
     );
   }
 

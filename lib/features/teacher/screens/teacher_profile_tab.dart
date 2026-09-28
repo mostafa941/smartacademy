@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 import '../../../providers/theme_provider.dart';
 import '../../../services/cloudinary_service.dart';
 
@@ -204,7 +205,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
     final inputBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonProfileLoading();
     }
 
     return SingleChildScrollView(

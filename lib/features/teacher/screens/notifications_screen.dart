@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/intl.dart';
 import 'student_evaluation_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final String teacherId;
+  final String teacherName;
 
-  const NotificationsScreen({super.key, required this.teacherId});
+  const NotificationsScreen({
+    super.key,
+    required this.teacherId,
+    this.teacherName = '',
+  });
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -17,10 +21,50 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _notifications = [];
 
+  String _resolvedTeacherName = '';
+  String? _teacherAvatarUrl;
+  String _teacherSubject = 'غير محدد';
+
   @override
   void initState() {
     super.initState();
+    _resolvedTeacherName = widget.teacherName;
+    _fetchTeacherInfo();
     _fetchNotifications();
+  }
+
+  Future<void> _fetchTeacherInfo() async {
+    try {
+      final profileRes = await _supabase
+          .from('profiles')
+          .select('full_name, avatar_url')
+          .eq('id', widget.teacherId)
+          .maybeSingle();
+
+      final subjectRes = await _supabase
+          .from('teacher_subjects')
+          .select('subjects(name)')
+          .eq('teacher_id', widget.teacherId);
+
+      final List subjectList = subjectRes as List;
+      final subjectNames = subjectList
+          .map((s) => s['subjects']?['name']?.toString() ?? '')
+          .where((n) => n.isNotEmpty)
+          .toList();
+
+      if (mounted) {
+        setState(() {
+          if (_resolvedTeacherName.isEmpty && profileRes != null) {
+            _resolvedTeacherName = (profileRes['full_name'] as String?) ?? '';
+          }
+          _teacherAvatarUrl = profileRes?['avatar_url'] as String?;
+          _teacherSubject =
+              subjectNames.isNotEmpty ? subjectNames.join(', ') : 'غير محدد';
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching teacher info in notifications: $e');
+    }
   }
 
   Future<void> _fetchNotifications() async {
@@ -126,6 +170,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 studentName: studentName,
                                 category: category,
                                 initial: initial,
+                                teacherName: _resolvedTeacherName,
+                                teacherAvatarUrl: _teacherAvatarUrl,
+                                teacherSubject: _teacherSubject,
                               ),
                             ),
                           );
