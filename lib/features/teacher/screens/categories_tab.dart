@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class CategoriesTab extends StatefulWidget {
   final String userId;
@@ -56,9 +57,7 @@ class _CategoriesTabState extends State<CategoriesTab> {
     final textColor = isDark ? Colors.white : const Color(0xFF2A1B38);
 
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFF724F96)),
-      );
+      return const SkeletonListLoading(itemCount: 4);
     }
 
     if (_stages.isEmpty) {

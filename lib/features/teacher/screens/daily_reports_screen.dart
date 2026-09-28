@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class DailyReportsScreen extends StatefulWidget {
   final String teacherId;
@@ -244,9 +245,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
 
           Expanded(
             child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFF724F96)),
-                  )
+                ? const SkeletonDailyReports(itemCount: 6)
                 : _reports.isEmpty
                 ? _buildEmpty(textColor)
                 : ListView.separated(

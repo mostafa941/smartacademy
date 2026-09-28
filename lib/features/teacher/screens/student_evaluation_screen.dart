@@ -164,9 +164,8 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             'attendance': isPresent,
             'note': _dailyNoteController.text.trim(),
             'ate_meal': ateMeal,
-            'teacher_name': teacherName,
-            if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
-              'teacher_photo_url': teacherPhotoUrl,
+            'took_break': tookBreak,
+            'stars': dailyStars,
           }).eq('id', existingReport['id']);
 
           // Send absence notification if marked absent
@@ -190,18 +189,31 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             'ate_meal': ateMeal,
             'took_break': tookBreak,
             'stars': dailyStars,
-            'teacher_name': teacherName,
-            if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
-              'teacher_photo_url': teacherPhotoUrl,
           });
 
-          // Send absence notification if marked absent
+          // Send attendance notification (present or absent)
           if (!isPresent) {
             await _supabase.from('notifications').insert({
               'student_id': widget.studentId,
               'teacher_id': widget.teacherId,
               'title': 'غياب عن الحصة',
               'body': 'تم تسجيل غيابك في حصة الأستاذ/ة $teacherName.',
+            });
+          } else {
+            // Send present notification with details
+            String notifBody = 'تم تسجيل حضورك في حصة الأستاذ/ة $teacherName ✅';
+            if (dailyStars > 0) {
+              notifBody += '\n⭐ حصلت على $dailyStars نجوم';
+            }
+            if (_dailyNoteController.text.trim().isNotEmpty) {
+              notifBody += '\n📝 ملاحظة: ${_dailyNoteController.text.trim()}';
+            }
+            
+            await _supabase.from('notifications').insert({
+              'student_id': widget.studentId,
+              'teacher_id': widget.teacherId,
+              'title': 'تسجيل حضور',
+              'body': notifBody,
             });
           }
         }
@@ -283,29 +295,13 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           'completed_duties': completedWeeklyDuties,
           'completed_lessons': _completedLessonsController.text.trim(),
           'note': _weeklyNoteController.text.trim(),
-          'teacher_name': teacherName,
-          if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
-            'teacher_photo_url': teacherPhotoUrl,
         });
       } catch (_) {
         // Table might not exist, ignore
       }
 
       // ── 6. Send Notification to Student ──
-      try {
-        final String actionStr = isPresent ? 'حاضر ✅' : 'غائب ❌';
-        final String notificationBody =
-            'تم تسجيل حضور ${widget.studentName}: $actionStr' +
-                (noteText.isNotEmpty ? '\nملاحظة المدرس: $noteText' : '');
-
-        await _supabase.from('notifications').insert({
-          'student_id': widget.studentId,
-          'title': 'تحديث تقرير اليوم 📋',
-          'body': notificationBody,
-        });
-      } catch (e) {
-        debugPrint('Error inserting notification: $e');
-      }
+      // The notification is already sent above based on attendance status
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

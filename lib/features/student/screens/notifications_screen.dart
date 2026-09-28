@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import '../../../providers/theme_provider.dart';
 import '../providers/notifications_provider.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -49,9 +50,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         body: Consumer<NotificationsProvider>(
           builder: (context, provider, child) {
             if (provider.isLoading && provider.notifications.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(color: Color(0xFF724F96)),
-              );
+              return const SkeletonNotifications(itemCount: 5);
             }
 
             if (provider.notifications.isEmpty) {

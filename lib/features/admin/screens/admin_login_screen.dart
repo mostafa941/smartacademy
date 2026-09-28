@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_colors.dart';
 import 'admin_dashboard_screen.dart';
 
@@ -15,10 +16,76 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isPasswordVisible = false;
+  bool _rememberMe = false;
+  bool _isLoading = true;
   String? _errorMessage;
 
   static const String _validEmail = 'smartacademy@gmail.com';
   static const String _validPassword = 'smartacademy12345';
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSavedCredentials();
+  }
+
+  Future<void> _checkSavedCredentials() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedEmail = prefs.getString('admin_email');
+      final savedPassword = prefs.getString('admin_password');
+      final rememberMe = prefs.getBool('admin_remember_me') ?? false;
+
+      if (rememberMe && savedEmail != null && savedPassword != null) {
+        // تسجيل دخول تلقائي
+        if (savedEmail == _validEmail && savedPassword == _validPassword) {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminDashboardScreen(),
+              ),
+            );
+          }
+          return;
+        }
+      }
+
+      // ملء الحقول إذا كان "تذكرني" مفعّل
+      if (rememberMe && savedEmail != null && savedPassword != null) {
+        _emailController.text = savedEmail;
+        _passwordController.text = savedPassword;
+        setState(() {
+          _rememberMe = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading saved credentials: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveCredentials(String email, String password) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (_rememberMe) {
+        await prefs.setString('admin_email', email);
+        await prefs.setString('admin_password', password);
+        await prefs.setBool('admin_remember_me', true);
+      } else {
+        await prefs.remove('admin_email');
+        await prefs.remove('admin_password');
+        await prefs.setBool('admin_remember_me', false);
+      }
+    } catch (e) {
+      debugPrint('Error saving credentials: $e');
+    }
+  }
 
   void _handleLogin() {
     setState(() {
@@ -30,6 +97,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       final password = _passwordController.text.trim();
 
       if (email == _validEmail && password == _validPassword) {
+        // حفظ بيانات الاعتماد
+        _saveCredentials(email, password);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -53,6 +123,17 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: AppColors.bodyBg,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.sidebarBg,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.bodyBg,
       body: Directionality(
@@ -200,7 +281,30 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 16),
+                    // Remember Me Checkbox
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Text(
+                          'تذكرني',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Checkbox(
+                          value: _rememberMe,
+                          activeColor: AppColors.sidebarBg,
+                          onChanged: (value) {
+                            setState(() {
+                              _rememberMe = value ?? false;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
                       height: 48,

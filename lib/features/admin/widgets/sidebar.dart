@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_colors.dart';
 import '../providers/admin_provider.dart';
 import '../screens/admin_login_screen.dart';
@@ -92,13 +93,21 @@ class SidebarWidget extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AdminLoginScreen(),
-                ),
-              );
+            onTap: () async {
+              // حذف بيانات الجلسة
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('admin_email');
+              await prefs.remove('admin_password');
+              await prefs.setBool('admin_remember_me', false);
+
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminLoginScreen(),
+                  ),
+                );
+              }
             },
             borderRadius: BorderRadius.circular(8),
             child: const Padding(

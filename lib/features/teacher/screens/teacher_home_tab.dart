@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'student_evaluation_screen.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class TeacherHomeTab extends StatefulWidget {
   final String userId;
@@ -246,8 +247,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           const SizedBox(height: 16),
           Expanded(
             child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFF724F96)))
+                ? const SkeletonStudentsGrid(itemCount: 8)
                 : _filteredStudents.isEmpty
                     ? Center(
                         child: Text(

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
 import '../models/weekly_report_model.dart';
 import '../models/supervisor_review_model.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class StudentNotesTab extends StatefulWidget {
   const StudentNotesTab({super.key});
@@ -478,9 +479,7 @@ class _DailyView extends StatelessWidget {
 
           Expanded(
             child: provider.isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                        color: Color(0xFF724F96)))
+                ? const SkeletonListLoading(itemCount: 5)
                 : !hasContent
                     ? _buildEmpty(textColor)
                     : ListView(
@@ -1056,9 +1055,7 @@ class _WeeklyView extends StatelessWidget {
 
           Expanded(
             child: provider.isLoadingWeekly
-                ? const Center(
-                    child: CircularProgressIndicator(
-                        color: Color(0xFF6B4EFF)))
+                ? const SkeletonListLoading(itemCount: 4)
                 : reports.isEmpty
                     ? _buildEmpty()
                     : ListView.builder(

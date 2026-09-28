@@ -97,6 +97,7 @@ flutter:
   # أضف مجلد الأصول والمجسمات البصرية الخاصة بالمشروع هنا
   assets:
     - assets/images/
+    - shorebird.yaml
     # - assets/icons/
 
   # To add custom fonts to your application, add a fonts section here,

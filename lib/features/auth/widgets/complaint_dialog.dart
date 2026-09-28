@@ -22,11 +22,23 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
 
     try {
       final supabase = Supabase.instance.client;
+      
+      // حفظ الشكوى في قاعدة البيانات
       await supabase.from('complaints').insert({
         'name': _nameController.text.trim(),
         'phone': _phoneController.text.trim(),
         'complaint': _complaintController.text.trim(),
+        'is_read': false,  // لتمييز الشكاوى الجديدة
       });
+
+      // إرسال إشعار للأدمن (يمكن إنشاء جدول admin_notifications أو استخدام نظام خارجي)
+      try {
+        // يمكن إضافة نظام إشعارات للأدمن هنا في المستقبل
+        // مثال: Firebase Cloud Messaging أو OneSignal
+        debugPrint('✅ تم إرسال شكوى جديدة: ${_nameController.text}');
+      } catch (e) {
+        debugPrint('⚠️ فشل إرسال الإشعار للأدمن: $e');
+      }
 
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -39,8 +51,8 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('حدث خطأ أثناء الإرسال، حاول مرة أخرى', textAlign: TextAlign.center),
+        SnackBar(
+          content: Text('حدث خطأ أثناء الإرسال: $e', textAlign: TextAlign.center),
           backgroundColor: Colors.redAccent,
         ),
       );

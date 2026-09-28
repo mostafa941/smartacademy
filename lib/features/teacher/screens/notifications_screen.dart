@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'student_evaluation_screen.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final String teacherId;
@@ -143,7 +144,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const SkeletonNotifications(itemCount: 6)
           : _notifications.isEmpty
               ? _buildEmpty()
               : ListView.builder(

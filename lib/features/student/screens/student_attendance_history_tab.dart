@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../providers/student_provider.dart';
+import '../../../core/widgets/skeleton_loading.dart';
 
 class StudentAttendanceHistoryTab extends StatefulWidget {
   const StudentAttendanceHistoryTab({super.key});
@@ -70,9 +71,7 @@ class _StudentAttendanceHistoryTabState
           const SizedBox(height: 20),
           Expanded(
             child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFF724F96)),
-                  )
+                ? const SkeletonListLoading(itemCount: 8)
                 : _error != null
                     ? Center(
                         child: Text(
