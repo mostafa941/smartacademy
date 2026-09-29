@@ -64,175 +64,207 @@ class _StudentMainLayoutState extends State<StudentMainLayout> {
     final unselectedColor =
         isDark ? Colors.white54 : const Color(0xFF2A1B38).withOpacity(0.5);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: ChangeNotifierProvider(
-        create: (_) => NotificationsProvider()..init(widget.userId),
-        child: Consumer<StudentProvider>(
-          builder: (context, provider, child) {
-
-          // Global loading state
-          if (provider.isLoading && provider.student == null) {
-            return Scaffold(
-              backgroundColor: bgColor,
-              body: const SkeletonCardLoading(),
-            );
-          }
-
-          if (provider.errorMessage != null && provider.student == null) {
-            return Scaffold(
-              backgroundColor: bgColor,
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error_outline, color: Colors.red.shade400, size: 60),
-                    const SizedBox(height: 15),
-                    Text(
-                      provider.errorMessage!,
-                      style: TextStyle(fontSize: 16, color: iconColor),
-                    ),
-                    const SizedBox(height: 15),
-                    ElevatedButton(
-                      onPressed: () {
-                        provider.fetchStudentData(
-                          widget.userId,
-                          isParentPhone: false,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF724F96),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('إعادة المحاولة',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          return Scaffold(
-            backgroundColor: bgColor,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: bgColor,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              centerTitle: true,
-              iconTheme: IconThemeData(color: iconColor),
-              title: Text(
-                'SMART',
-                style: TextStyle(
-                  color: iconColor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'smart_font',
-                  letterSpacing: 2,
-                ),
-              ),
+    return PopScope(
+      canPop: false, // منع الرجوع للصفحات السابقة
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          // إظهار dialog للخروج من التطبيق
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('الخروج من التطبيق', textAlign: TextAlign.right),
+              content: const Text('هل تريد الخروج من التطبيق؟', textAlign: TextAlign.right),
               actions: [
-                Consumer<NotificationsProvider>(
-                  builder: (context, notifProvider, child) {
-                    final unread = notifProvider.unreadCount;
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        IconButton(
-                          icon: const Icon(CupertinoIcons.bell_fill, size: 28),
-                          color: iconColor,
-                          onPressed: () {
-                            final notifProvider = context.read<NotificationsProvider>();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ChangeNotifierProvider<NotificationsProvider>.value(
-                                  value: notifProvider,
-                                  child: const NotificationsScreen(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        if (unread > 0)
-                          Positioned(
-                            right: 8,
-                            top: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                unread > 9 ? '9+' : unread.toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    );
-                  },
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('إلغاء'),
                 ),
-                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // الخروج من التطبيق
+                    Future.delayed(Duration.zero, () {
+                      if (context.mounted) {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      }
+                    });
+                  },
+                  child: const Text('خروج', style: TextStyle(color: Colors.red)),
+                ),
               ],
             ),
-            body: SafeArea(
-              child: _pages[_currentIndex],
-            ),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                color: navBg,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 10,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: BottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: (index) => setState(() => _currentIndex = index),
-                backgroundColor: navBg,
-                selectedItemColor: const Color(0xFF724F96),
-                unselectedItemColor: unselectedColor,
-                showUnselectedLabels: true,
-                type: BottomNavigationBarType.fixed,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_rounded),
-                    label: 'الرئيسية',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.history_rounded),
-                    label: 'السجل',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.menu_book_rounded),
-                    label: 'الملاحظات',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.settings_rounded),
-                    label: 'الإعدادات',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_rounded),
-                    label: 'البروفايل',
-                  ),
-                ],
-              ),
-            ),
           );
-        },
-      ),
+        }
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: ChangeNotifierProvider(
+          create: (_) => NotificationsProvider()..init(widget.userId),
+          child: Consumer<StudentProvider>(
+            builder: (context, provider, child) {
+              // Global loading state
+              if (provider.isLoading && provider.student == null) {
+                return Scaffold(
+                  backgroundColor: bgColor,
+                  body: const SkeletonHomeLoading(),
+                );
+              }
+
+              if (provider.errorMessage != null && provider.student == null) {
+                return Scaffold(
+                  backgroundColor: bgColor,
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red.shade400, size: 60),
+                        const SizedBox(height: 15),
+                        Text(
+                          provider.errorMessage!,
+                          style: TextStyle(fontSize: 16, color: iconColor),
+                        ),
+                        const SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () {
+                            provider.fetchStudentData(
+                              widget.userId,
+                              isParentPhone: false,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF724F96),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('إعادة المحاولة',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return Scaffold(
+                backgroundColor: bgColor,
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: bgColor,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                  centerTitle: true,
+                  iconTheme: IconThemeData(color: iconColor),
+                  title: Text(
+                    'SMART',
+                    style: TextStyle(
+                      color: iconColor,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'smart_font',
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  actions: [
+                    Consumer<NotificationsProvider>(
+                      builder: (context, notifProvider, child) {
+                        final unread = notifProvider.unreadCount;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(CupertinoIcons.bell_fill, size: 28),
+                              color: iconColor,
+                              onPressed: () {
+                                final notifProvider = context.read<NotificationsProvider>();
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ChangeNotifierProvider<NotificationsProvider>.value(
+                                      value: notifProvider,
+                                      child: const NotificationsScreen(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            if (unread > 0)
+                              Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    unread > 9 ? '9+' : unread.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+                body: SafeArea(
+                  child: _pages[_currentIndex],
+                ),
+                bottomNavigationBar: Container(
+                  decoration: BoxDecoration(
+                    color: navBg,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                  child: BottomNavigationBar(
+                    currentIndex: _currentIndex,
+                    onTap: (index) => setState(() => _currentIndex = index),
+                    backgroundColor: navBg,
+                    selectedItemColor: const Color(0xFF724F96),
+                    unselectedItemColor: unselectedColor,
+                    showUnselectedLabels: true,
+                    type: BottomNavigationBarType.fixed,
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.home_rounded),
+                        label: 'الرئيسية',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.history_rounded),
+                        label: 'السجل',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.menu_book_rounded),
+                        label: 'الملاحظات',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.settings_rounded),
+                        label: 'الإعدادات',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.person_rounded),
+                        label: 'البروفايل',
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

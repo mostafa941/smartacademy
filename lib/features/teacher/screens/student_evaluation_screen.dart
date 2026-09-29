@@ -247,7 +247,6 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               .from('student_reviews')
               .select('id')
               .eq('student_id', widget.studentId)
-              .eq('teacher_name', teacherName)
               .eq('review_date', todayStr)
               .maybeSingle();
 
@@ -283,7 +282,8 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             });
           }
         } catch (e) {
-          debugPrint('Error saving supervisor review: $e');
+          // Ignore if student_reviews table doesn't have teacher_name column
+          debugPrint('Note: student_reviews save skipped: $e');
         }
       }
 
@@ -304,20 +304,30 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
       // The notification is already sent above based on attendance status
 
       if (!mounted) return;
+      
+      // رسالة نجاح واضحة بناءً على حالة الحضور
+      final String successMessage = isPresent 
+          ? '✅ تم تسجيل حضور ${widget.studentName} بنجاح'
+          : '✅ تم تسجيل غياب ${widget.studentName}';
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('✅ تم حفظ التقييم وإرسال الإشعار بنجاح'),
+        SnackBar(
+          content: Text(successMessage),
           backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
         ),
       );
       Navigator.of(context).pop();
     } catch (e) {
       debugPrint('Error saving evaluation: $e');
       if (!mounted) return;
+      
+      // رسالة خطأ مبسطة للمستخدم
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('حدث خطأ أثناء الحفظ: $e'),
-          backgroundColor: Colors.red,
+        const SnackBar(
+          content: Text('⚠️ حدث خطأ، حاول مرة أخرى'),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 2),
         ),
       );
     } finally {

@@ -170,9 +170,43 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
         ? Colors.white54
         : const Color(0xFF2A1B38).withOpacity(0.5);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return PopScope(
+      canPop: false, // منع الرجوع للصفحات السابقة
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          // إظهار dialog للخروج
+          showDialog(
+            context: context,
+            builder: (context) => Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: const Text('الخروج من التطبيق'),
+                content: const Text('هل تريد الخروج من التطبيق؟'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('إلغاء'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Future.delayed(Duration.zero, () {
+                        if (context.mounted) {
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                        }
+                      });
+                    },
+                    child: const Text('خروج', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
           backgroundColor: bgColor,
@@ -281,6 +315,7 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
