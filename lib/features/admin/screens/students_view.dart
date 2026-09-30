@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../providers/admin_provider.dart';
@@ -26,7 +27,7 @@ class StudentsView extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.add, color: Colors.white, size: 18),
                 label: const Text(
-                  'اضافة طالب جديد',
+                  'Ø§Ø¶Ø§ÙØ© Ø·Ø§Ù„Ø¨ Ø¬Ø¯ÙŠØ¯',
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
@@ -43,7 +44,7 @@ class StudentsView extends StatelessWidget {
                   child: TextField(
                     onChanged: (val) => provider.setSearchQuery(val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث بأسم الطالب او رقم الهاتف...',
+                      hintText: 'Ø§Ø¨Ø­Ø« Ø¨Ø£Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨ Ø§Ùˆ Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ...',
                       hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
                       fillColor: Colors.white,
                       filled: true,
@@ -74,18 +75,18 @@ class StudentsView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       child: Row(
                         children: const [
-                          Expanded(flex: 2, child: Text('اسم الطالب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 1, child: Text('الفئة العمرية', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 2, child: Text('رقم ولي الأمر الطالب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 2, child: Text('الحضور والغياب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 1, child: Text('الأجراءات', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text('Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 1, child: Text('Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ©', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text('Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø£Ù…Ø± Ø§Ù„Ø·Ø§Ù„Ø¨', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text('Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 1, child: Text('Ø§Ù„Ø£Ø¬Ø±Ø§Ø¡Ø§Øª', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
                         ],
                       ),
                     ),
                     if (provider.filteredStudents.isEmpty)
                       const Padding(
                         padding: EdgeInsets.all(32.0),
-                        child: Center(child: Text('لا توجد نتائج مطابقة للبحث')),
+                        child: Center(child: Text('Ù„Ø§ ØªÙˆØ¬Ø¯ Ù†ØªØ§Ø¦Ø¬ Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„Ù„Ø¨Ø­Ø«')),
                       )
                     else
                       ...provider.filteredStudents.map((student) {
@@ -106,7 +107,7 @@ class StudentsView extends StatelessWidget {
                                       radius: 14,
                                       backgroundColor: const Color(0xFFE6E6FA),
                                       backgroundImage: student['photo_url'] != null && student['photo_url'].toString().isNotEmpty
-                                          ? NetworkImage(student['photo_url'])
+                                          ? CachedNetworkImageProvider(student['photo_url'])
                                           : null,
                                       child: (student['photo_url'] == null || student['photo_url'].toString().isEmpty)
                                           ? Text(
@@ -118,7 +119,7 @@ class StudentsView extends StatelessWidget {
                                           : null,
                                     ),
                                     const SizedBox(width: 8),
-                                    Expanded(child: Text(student['full_name'] ?? 'بدون اسم', style: const TextStyle(fontWeight: FontWeight.w600))),
+                                    Expanded(child: Text(student['full_name'] ?? 'Ø¨Ø¯ÙˆÙ† Ø§Ø³Ù…', style: const TextStyle(fontWeight: FontWeight.w600))),
                                   ],
                                 ),
                               ),
@@ -136,7 +137,7 @@ class StudentsView extends StatelessWidget {
                                   onPressed: () {
                                     provider.selectStudent(student);
                                   },
-                                  child: const Text('فتح الملف', style: TextStyle(color: Colors.black87, fontSize: 12)),
+                                  child: const Text('ÙØªØ­ Ø§Ù„Ù…Ù„Ù', style: TextStyle(color: Colors.black87, fontSize: 12)),
                                 ),
                               ),
                             ],

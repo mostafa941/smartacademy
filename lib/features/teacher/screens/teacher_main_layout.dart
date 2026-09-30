@@ -1,5 +1,7 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 import 'teacher_home_tab.dart';
@@ -60,7 +62,7 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
             value: widget.userId,
           ),
           callback: (payload) {
-            debugPrint('🔔 New notification received via Realtime: $payload');
+            debugPrint('ðŸ”” New notification received via Realtime: $payload');
             _fetchUnreadCount();
           },
         )
@@ -152,7 +154,7 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
         child: CircleAvatar(
           radius: 12, // match normal icon size
           backgroundColor: Colors.transparent,
-          backgroundImage: NetworkImage(_avatarUrl!),
+          backgroundImage: CachedNetworkImageProvider(_avatarUrl!),
         ),
       );
     } else {
@@ -171,37 +173,16 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
         : const Color(0xFF2A1B38).withOpacity(0.5);
 
     return PopScope(
-      canPop: false, // منع الرجوع للصفحات السابقة
+      canPop: false,
       onPopInvoked: (didPop) {
         if (!didPop) {
-          // إظهار dialog للخروج
-          showDialog(
-            context: context,
-            builder: (context) => Directionality(
-              textDirection: TextDirection.rtl,
-              child: AlertDialog(
-                title: const Text('الخروج من التطبيق'),
-                content: const Text('هل تريد الخروج من التطبيق؟'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('إلغاء'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Future.delayed(Duration.zero, () {
-                        if (context.mounted) {
-                          Navigator.of(context).popUntil((route) => route.isFirst);
-                        }
-                      });
-                    },
-                    child: const Text('خروج', style: TextStyle(color: Colors.red)),
-                  ),
-                ],
-              ),
-            ),
-          );
+          if (_currentIndex != 0) {
+            // Ø§Ù„Ø±Ø¬ÙˆØ¹ Ù„Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ø£ÙˆÙ„Ø§Ù‹
+            setState(() => _currentIndex = 0);
+          } else {
+            // Ø§Ù„Ø®Ø±ÙˆØ¬ Ù…Ù† Ø§Ù„ØªØ·Ø¨ÙŠÙ‚ Ù„Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù‡Ø§ØªÙ Ø¨Ø¯ÙˆÙ† ØªØ³Ø¬ÙŠÙ„ Ø®Ø±ÙˆØ¬
+            SystemNavigator.pop();
+          }
         }
       },
       child: Directionality(
@@ -298,19 +279,19 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
             items: [
               const BottomNavigationBarItem(
                 icon: Icon(Icons.home_rounded),
-                label: 'الرئيسية',
+                label: 'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.people_alt_rounded),
-                label: 'الفئات',
+                label: 'Ø§Ù„ÙØ¦Ø§Øª',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.settings_rounded),
-                label: 'الإعدادات',
+                label: 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª',
               ),
               BottomNavigationBarItem(
                 icon: _buildProfileIcon(isActive: _currentIndex == 3),
-                label: 'البروفايل',
+                label: 'Ø§Ù„Ø¨Ø±ÙˆÙØ§ÙŠÙ„',
               ),
             ],
           ),
@@ -320,3 +301,4 @@ class _TeacherMainLayoutState extends State<TeacherMainLayout> {
     );
   }
 }
+

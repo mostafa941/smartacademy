@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../screens/daily_reports_screen.dart';
 import '../screens/weekly_reports_screen.dart';
@@ -38,7 +39,7 @@ class TeacherDrawer extends StatelessWidget {
                       ),
                     ),
                     const Text(
-                      'معلم',
+                      'Ù…Ø¹Ù„Ù…',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -51,7 +52,7 @@ class TeacherDrawer extends StatelessWidget {
                   radius: 28,
                   backgroundColor: const Color(0xFFEEEEEE),
                   backgroundImage: (avatarUrl != null && avatarUrl!.isNotEmpty)
-                      ? NetworkImage(avatarUrl!)
+                      ? CachedNetworkImageProvider(avatarUrl!)
                       : null,
                   child: (avatarUrl == null || avatarUrl!.isEmpty)
                       ? const Icon(Icons.face, size: 32, color: Color(0xFF2A1B38))
@@ -65,7 +66,7 @@ class TeacherDrawer extends StatelessWidget {
 
             // Drawer Items
             _buildDrawerItem(
-              title: 'سجل التقييمات اليومية',
+              title: 'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„ÙŠÙˆÙ…ÙŠØ©',
               icon: Icons.calendar_today_rounded,
               onTap: () {
                 Navigator.of(context).pop();
@@ -77,7 +78,7 @@ class TeacherDrawer extends StatelessWidget {
               },
             ),
             _buildDrawerItem(
-              title: 'سجل التقييمات الأسبوعية',
+              title: 'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
               icon: Icons.date_range_rounded,
               onTap: () {
                 Navigator.of(context).pop();
@@ -114,3 +115,4 @@ class TeacherDrawer extends StatelessWidget {
     );
   }
 }
+

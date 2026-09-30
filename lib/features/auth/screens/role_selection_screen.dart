@@ -52,24 +52,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
             children: [
               const SizedBox(height: 12),
               // زر الرجوع
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12),
-                      alignment: Alignment.center,
-                    ),
-                    child: const Icon(Icons.arrow_back, size: 25),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
+            
+          
               // Header Logo
               Stack(
                 clipBehavior: Clip.none,
@@ -83,6 +67,35 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       fontWeight: FontWeight.w900,
                       fontFamily: 'smart_font',
                       letterSpacing: 2,
+                    ),
+                  ),
+                  Positioned(
+                    top: -30,
+                    right: -55,
+                    child: Transform.rotate(
+                      angle: 0.25,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Color(0xFF724F96),
+                            size: 65,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 4),
+                            child: const Text(
+                              'SMART',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -229,7 +242,7 @@ class _RoleCard extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFF2A1B38).withOpacity(0.2),
+                    color: const Color(0xFF2A1B38).withAlpha(51),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   )

@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
@@ -22,11 +23,11 @@ class StudentHomeTab extends StatelessWidget {
 
     final studentName = (provider.student?.name != null && provider.student!.name.trim().isNotEmpty)
         ? provider.student!.name
-        : (userName.trim().isNotEmpty ? userName : 'طالب');
+        : (userName.trim().isNotEmpty ? userName : 'Ø·Ø§Ù„Ø¨');
 
     final studentGrade = (provider.student?.grade != null && provider.student!.grade.trim().isNotEmpty)
         ? provider.student!.grade
-        : 'غير محدد';
+        : 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
 
     final initial = studentName.isNotEmpty ? studentName[0] : '?';
 
@@ -41,7 +42,7 @@ class StudentHomeTab extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            // ── Welcome Card ──
+            // â”€â”€ Welcome Card â”€â”€
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -64,7 +65,7 @@ class StudentHomeTab extends StatelessWidget {
                     backgroundColor:
                         isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEEEEEE),
                     backgroundImage: provider.student?.photoUrl != null && provider.student!.photoUrl!.isNotEmpty
-                        ? NetworkImage(provider.student!.photoUrl!)
+                        ? CachedNetworkImageProvider(provider.student!.photoUrl!)
                         : null,
                     child: provider.student?.photoUrl == null || provider.student!.photoUrl!.isEmpty
                         ? Text(
@@ -83,7 +84,7 @@ class StudentHomeTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'أهلاً $studentName 👋',
+                          'Ø£Ù‡Ù„Ø§Ù‹ $studentName ðŸ‘‹',
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,
@@ -92,7 +93,7 @@ class StudentHomeTab extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'الصف: $studentGrade',
+                          'Ø§Ù„ØµÙ: $studentGrade',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 13,
@@ -107,28 +108,28 @@ class StudentHomeTab extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // ── Date Filter ──
+            // â”€â”€ Date Filter â”€â”€
             const DateFilterWidget(),
 
             const SizedBox(height: 16),
 
-            // ── Attendance Card ──
-            _buildSectionTitle('حالة الحضور', textColor),
+            // â”€â”€ Attendance Card â”€â”€
+            _buildSectionTitle('Ø­Ø§Ù„Ø© Ø§Ù„Ø­Ø¶ÙˆØ±', textColor),
             const SizedBox(height: 10),
             _buildAttendanceCard(provider, cardColor, textColor, isDark),
 
             const SizedBox(height: 20),
 
-            // ── Daily Activity Card ──
-            _buildSectionTitle('النشاط اليومي', textColor),
+            // â”€â”€ Daily Activity Card â”€â”€
+            _buildSectionTitle('Ø§Ù„Ù†Ø´Ø§Ø· Ø§Ù„ÙŠÙˆÙ…ÙŠ', textColor),
             const SizedBox(height: 10),
             _buildDailyActivityCard(provider, cardColor, textColor, isDark),
 
             const SizedBox(height: 20),
 
-            // ── Weekly Report Section ──
+            // â”€â”€ Weekly Report Section â”€â”€
             if (provider.weeklyReport != null) ...[
-              _buildSectionTitle('التقرير الأسبوعي', textColor),
+              _buildSectionTitle('Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠ', textColor),
               const SizedBox(height: 10),
               _buildWeeklyCard(provider, cardColor, textColor, isDark),
               const SizedBox(height: 20),
@@ -177,7 +178,7 @@ class StudentHomeTab extends StatelessWidget {
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('لا يوجد تقرير لهذا اليوم',
+                child: Text('Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚Ø±ÙŠØ± Ù„Ù‡Ø°Ø§ Ø§Ù„ÙŠÙˆÙ…',
                     style: TextStyle(color: Colors.grey.shade500)),
               ),
             )
@@ -197,7 +198,7 @@ class StudentHomeTab extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      const Text('وقت الحضور',
+                      const Text('ÙˆÙ‚Øª Ø§Ù„Ø­Ø¶ÙˆØ±',
                           style: TextStyle(color: Colors.grey, fontSize: 11)),
                     ],
                   ),
@@ -222,14 +223,14 @@ class StudentHomeTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          isPresent ? 'حاضر' : 'غائب',
+                          isPresent ? 'Ø­Ø§Ø¶Ø±' : 'ØºØ§Ø¦Ø¨',
                           style: TextStyle(
                             color: textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Text('حالة اليوم',
+                        const Text('Ø­Ø§Ù„Ø© Ø§Ù„ÙŠÙˆÙ…',
                             style: TextStyle(color: Colors.grey, fontSize: 11)),
                       ],
                     ),
@@ -263,7 +264,7 @@ class StudentHomeTab extends StatelessWidget {
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('لا يوجد نشاط مسجل',
+                child: Text('Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù†Ø´Ø§Ø· Ù…Ø³Ø¬Ù„',
                     style: TextStyle(color: Colors.grey.shade500)),
               ),
             )
@@ -272,8 +273,8 @@ class StudentHomeTab extends StatelessWidget {
               children: [
                 _buildActivityItem(
                   icon: Icons.restaurant_rounded,
-                  label: 'الوجبة',
-                  value: report.mealEaten ? 'أكل ✅' : 'لم يأكل',
+                  label: 'Ø§Ù„ÙˆØ¬Ø¨Ø©',
+                  value: report.mealEaten ? 'Ø£ÙƒÙ„ âœ…' : 'Ù„Ù… ÙŠØ£ÙƒÙ„',
                   isGood: report.mealEaten,
                   textColor: textColor,
                 ),
@@ -284,8 +285,8 @@ class StudentHomeTab extends StatelessWidget {
                 ),
                 _buildActivityItem(
                   icon: Icons.sports_esports_rounded,
-                  label: 'الاستراحة',
-                  value: report.breakTaken ? 'أخذ استراحة ✅' : 'لم يأخذ',
+                  label: 'Ø§Ù„Ø§Ø³ØªØ±Ø§Ø­Ø©',
+                  value: report.breakTaken ? 'Ø£Ø®Ø° Ø§Ø³ØªØ±Ø§Ø­Ø© âœ…' : 'Ù„Ù… ÙŠØ£Ø®Ø°',
                   isGood: report.breakTaken,
                   textColor: textColor,
                 ),
@@ -353,7 +354,7 @@ class StudentHomeTab extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'أكمل الواجبات الأسبوعية',
+                  'Ø£ÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 15,
@@ -376,7 +377,7 @@ class StudentHomeTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'الدروس المنجزة:',
+                      'Ø§Ù„Ø¯Ø±ÙˆØ³ Ø§Ù„Ù…Ù†Ø¬Ø²Ø©:',
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                     const SizedBox(height: 4),
@@ -400,7 +401,7 @@ class StudentHomeTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ملاحظات المدرس:',
+                      'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³:',
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                     const SizedBox(height: 4),
@@ -433,3 +434,4 @@ class StudentHomeTab extends StatelessWidget {
     );
   }
 }
+

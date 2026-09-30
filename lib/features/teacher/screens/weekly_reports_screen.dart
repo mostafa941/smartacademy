@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/widgets/skeleton_loading.dart';
@@ -45,7 +46,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
 
       final reportsRes = await _supabase
           .from('weekly_evaluations')
-          .select('*, students(full_name, age_group)')
+          .select('*, students(full_name, age_group, photo_url)')
           .gte('created_at', '${startStr}T00:00:00Z')
           .lte('created_at', '${endStr}T23:59:59Z')
           .order('created_at', ascending: false);
@@ -70,8 +71,8 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
 
     final months = [
-      '', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      '', 'ÙŠÙ†Ø§ÙŠØ±', 'ÙØ¨Ø±Ø§ÙŠØ±', 'Ù…Ø§Ø±Ø³', 'Ø£Ø¨Ø±ÙŠÙ„', 'Ù…Ø§ÙŠÙˆ', 'ÙŠÙˆÙ†ÙŠÙˆ',
+      'ÙŠÙˆÙ„ÙŠÙˆ', 'Ø£ØºØ³Ø·Ø³', 'Ø³Ø¨ØªÙ…Ø¨Ø±', 'Ø£ÙƒØªÙˆØ¨Ø±', 'Ù†ÙˆÙÙ…Ø¨Ø±', 'Ø¯ÙŠØ³Ù…Ø¨Ø±'
     ];
 
     return '${startOfWeek.day} ${months[startOfWeek.month]} - ${endOfWeek.day} ${months[endOfWeek.month]}';
@@ -79,22 +80,22 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
 
   String _weekLabel(int week) {
     const ordinals = [
-      '', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس',
-      'السادس', 'السابع', 'الثامن', 'التاسع', 'العاشر',
-      'الحادي عشر', 'الثاني عشر', 'الثالث عشر', 'الرابع عشر', 'الخامس عشر',
-      'السادس عشر', 'السابع عشر', 'الثامن عشر', 'التاسع عشر', 'العشرون',
-      'الحادي والعشرون', 'الثاني والعشرون', 'الثالث والعشرون', 'الرابع والعشرون',
-      'الخامس والعشرون', 'السادس والعشرون', 'السابع والعشرون', 'الثامن والعشرون',
-      'التاسع والعشرون', 'الثلاثون', 'الحادي والثلاثون', 'الثاني والثلاثون',
-      'الثالث والثلاثون', 'الرابع والثلاثون', 'الخامس والثلاثون',
-      'السادس والثلاثون', 'السابع والثلاثون', 'الثامن والثلاثون',
-      'التاسع والثلاثون', 'الأربعون', 'الحادي والأربعون', 'الثاني والأربعون',
-      'الثالث والأربعون', 'الرابع والأربعون', 'الخامس والأربعون',
-      'السادس والأربعون', 'السابع والأربعون', 'الثامن والأربعون',
-      'التاسع والأربعون', 'الخمسون', 'الحادي والخمسون', 'الثاني والخمسون',
+      '', 'Ø§Ù„Ø£ÙˆÙ„', 'Ø§Ù„Ø«Ø§Ù†ÙŠ', 'Ø§Ù„Ø«Ø§Ù„Ø«', 'Ø§Ù„Ø±Ø§Ø¨Ø¹', 'Ø§Ù„Ø®Ø§Ù…Ø³',
+      'Ø§Ù„Ø³Ø§Ø¯Ø³', 'Ø§Ù„Ø³Ø§Ø¨Ø¹', 'Ø§Ù„Ø«Ø§Ù…Ù†', 'Ø§Ù„ØªØ§Ø³Ø¹', 'Ø§Ù„Ø¹Ø§Ø´Ø±',
+      'Ø§Ù„Ø­Ø§Ø¯ÙŠ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù†ÙŠ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù„Ø« Ø¹Ø´Ø±', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø®Ø§Ù…Ø³ Ø¹Ø´Ø±',
+      'Ø§Ù„Ø³Ø§Ø¯Ø³ Ø¹Ø´Ø±', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù…Ù† Ø¹Ø´Ø±', 'Ø§Ù„ØªØ§Ø³Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø¹Ø´Ø±ÙˆÙ†',
+      'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†',
+      'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†',
+      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
+      'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
+      'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
+      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
+      'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
+      'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
+      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø®Ù…Ø³ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø®Ù…Ø³ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø®Ù…Ø³ÙˆÙ†',
     ];
-    if (week < 1 || week >= ordinals.length) return 'الأسبوع $week';
-    return 'الأسبوع ${ordinals[week]}';
+    if (week < 1 || week >= ordinals.length) return 'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ $week';
+    return 'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ ${ordinals[week]}';
   }
 
   @override
@@ -118,7 +119,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'سجل التقييمات الأسبوعية',
+          'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
           style: TextStyle(
             color: textColor,
             fontSize: 20,
@@ -198,7 +199,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                               Icon(Icons.expand_more_rounded, color: Colors.white, size: 18),
                               SizedBox(width: 6),
                               Text(
-                                'اختر أسبوع',
+                                'Ø§Ø®ØªØ± Ø£Ø³Ø¨ÙˆØ¹',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -252,7 +253,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${_reports.length} تقييم',
+                    '${_reports.length} ØªÙ‚ÙŠÙŠÙ…',
                     style: const TextStyle(
                       color: Color(0xFF724F96),
                       fontWeight: FontWeight.bold,
@@ -261,7 +262,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                   ),
                 ),
                 Text(
-                  'التقييمات الأسبوعية',
+                  'Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
                   style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.bold,
@@ -314,7 +315,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'اختر الأسبوع',
+              'Ø§Ø®ØªØ± Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -361,7 +362,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           Icon(Icons.date_range_rounded, size: 80, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'لا توجد تقييمات في هذا الأسبوع',
+            'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
             style: TextStyle(
               color: textColor,
               fontSize: 16,
@@ -370,7 +371,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'اختر أسبوعاً آخر أو قم بإضافة تقييمات',
+            'Ø§Ø®ØªØ± Ø£Ø³Ø¨ÙˆØ¹Ø§Ù‹ Ø¢Ø®Ø± Ø£Ùˆ Ù‚Ù… Ø¨Ø¥Ø¶Ø§ÙØ© ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -380,9 +381,10 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
 
   Widget _buildWeeklyCard(Map<String, dynamic> report, {required Color cardColor, required Color textColor}) {
     final student = report['students'] as Map<String, dynamic>?;
-    final studentName = student?['full_name'] ?? 'طالب غير معروف';
+    final studentName = student?['full_name'] ?? 'Ø·Ø§Ù„Ø¨ ØºÙŠØ± Ù…Ø¹Ø±ÙˆÙ';
     final ageGroup = student?['age_group'] ?? '';
     final initial = studentName.isNotEmpty ? studentName[0] : '?';
+    final photoUrl = student?['photo_url'] as String?;
     final completedDuties = report['completed_duties'] == true;
     final completedLessons = report['completed_lessons']?.toString() ?? '';
     final note = report['note']?.toString() ?? '';
@@ -428,7 +430,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      completedDuties ? 'أكمل الواجبات' : 'لم يكمل الواجبات',
+                      completedDuties ? 'Ø£ÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª' : 'Ù„Ù… ÙŠÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª',
                       style: TextStyle(
                         color: completedDuties ? Colors.green.shade700 : Colors.orange.shade700,
                         fontWeight: FontWeight.bold,
@@ -458,14 +460,19 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: avatarBg,
-                    child: Text(
-                      initial,
-                      style: const TextStyle(
-                        color: Color(0xFF724F96),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                    backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+                        ? CachedNetworkImageProvider(photoUrl)
+                        : null,
+                    child: (photoUrl == null || photoUrl.isEmpty)
+                        ? Text(
+                            initial,
+                            style: const TextStyle(
+                              color: Color(0xFF724F96),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          )
+                        : null,
                   ),
                 ],
               ),
@@ -488,7 +495,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                 ),
                 const SizedBox(width: 8),
                 const Text(
-                  'الدروس المنجزة:',
+                  'Ø§Ù„Ø¯Ø±ÙˆØ³ Ø§Ù„Ù…Ù†Ø¬Ø²Ø©:',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 12,
@@ -530,3 +537,4 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
     );
   }
 }
+

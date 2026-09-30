@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'student_evaluation_screen.dart';
@@ -26,8 +27,8 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
   String _searchQuery = '';
   RealtimeChannel? _studentsChannel;
 
-  // بيانات المدرس
-  String _teacherSubject = 'غير محدد';
+  // Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³
+  String _teacherSubject = 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
   String? _teacherAvatarUrl;
 
   @override
@@ -46,7 +47,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           schema: 'public',
           table: 'students',
           callback: (payload) {
-            debugPrint('🔄 Student table changed. Refreshing list...');
+            debugPrint('ðŸ”„ Student table changed. Refreshing list...');
             _fetchStudents();
           },
         )
@@ -61,14 +62,14 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
 
   Future<void> _fetchTeacherInfo() async {
     try {
-      // جلب avatar_url من profiles
+      // Ø¬Ù„Ø¨ avatar_url Ù…Ù† profiles
       final profileRes = await _supabase
           .from('profiles')
           .select('avatar_url')
           .eq('id', widget.userId)
           .maybeSingle();
 
-      // جلب المادة من teacher_subjects
+      // Ø¬Ù„Ø¨ Ø§Ù„Ù…Ø§Ø¯Ø© Ù…Ù† teacher_subjects
       final subjectRes = await _supabase
           .from('teacher_subjects')
           .select('subjects(name)')
@@ -85,7 +86,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           _teacherAvatarUrl = profileRes?['avatar_url'] as String?;
           _teacherSubject = subjectNames.isNotEmpty
               ? subjectNames.join(', ')
-              : 'غير محدد';
+              : 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
         });
       }
     } catch (e) {
@@ -218,7 +219,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                     style: TextStyle(color: textColor),
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: 'بحث عن اسم الطالب...',
+                      hintText: 'Ø¨Ø­Ø« Ø¹Ù† Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨...',
                       hintStyle: TextStyle(
                         color: hintColor,
                         fontSize: 14,
@@ -235,8 +236,8 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           const SizedBox(height: 20),
           Text(
             widget.filterCategory == null
-                ? 'الطلاب - الفئة العمرية (جميع الفئات)'
-                : 'الطلاب - الفئة العمرية (${widget.filterCategory})',
+                ? 'Ø§Ù„Ø·Ù„Ø§Ø¨ - Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© (Ø¬Ù…ÙŠØ¹ Ø§Ù„ÙØ¦Ø§Øª)'
+                : 'Ø§Ù„Ø·Ù„Ø§Ø¨ - Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© (${widget.filterCategory})',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -251,7 +252,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                 : _filteredStudents.isEmpty
                     ? Center(
                         child: Text(
-                          'لا يوجد طلاب في هذه الفئة',
+                          'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø·Ù„Ø§Ø¨ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©',
                           style: TextStyle(
                             color: textColor,
                             fontWeight: FontWeight.bold,
@@ -264,7 +265,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                             const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final student = _filteredStudents[index];
-                          final name = student['full_name'] ?? 'بدون اسم';
+                          final name = student['full_name'] ?? 'Ø¨Ø¯ÙˆÙ† Ø§Ø³Ù…';
                           final category = student['age_group'] ?? '';
                           final initial =
                               name.isNotEmpty ? name[0] : '?';
@@ -373,7 +374,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                     ),
                   ),
                   Text(
-                    'الفئة: $category',
+                    'Ø§Ù„ÙØ¦Ø©: $category',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 11,
@@ -386,7 +387,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                 radius: 22,
                 backgroundColor: avatarBg,
                 backgroundImage: photoUrl != null && photoUrl.isNotEmpty
-                    ? NetworkImage(photoUrl)
+                    ? CachedNetworkImageProvider(photoUrl)
                     : null,
                 child: photoUrl == null || photoUrl.isEmpty
                     ? Text(
@@ -406,3 +407,4 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
     );
   }
 }
+

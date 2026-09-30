@@ -7,6 +7,9 @@ class SkeletonListLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
     return Skeletonizer(
       enabled: true,
       child: ListView.builder(
@@ -14,13 +17,14 @@ class SkeletonListLoading extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemBuilder: (context, index) {
           return Card(
+            color: cardColor,
             margin: const EdgeInsets.only(bottom: 16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: ListTile(
-              leading: const CircleAvatar(radius: 24, child: Icon(Icons.person)),
-              title: const Text('العنوان الرئيسي للعنصر هنا'),
-              subtitle: const Text('هذا النص هو نص تجريبي يظهر كعنصر تحميل'),
-              trailing: const Icon(Icons.arrow_forward_ios),
+            child: const ListTile(
+              leading: CircleAvatar(radius: 24, child: Icon(Icons.person)),
+              title: Text('العنوان الرئيسي للعنصر هنا'),
+              subtitle: Text('هذا النص هو نص تجريبي يظهر كعنصر تحميل'),
+              trailing: Icon(Icons.arrow_forward_ios),
             ),
           );
         },
@@ -35,6 +39,9 @@ class SkeletonCardLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
     return Skeletonizer(
       enabled: true,
       child: SingleChildScrollView(
@@ -42,20 +49,21 @@ class SkeletonCardLoading extends StatelessWidget {
         child: Column(
           children: List.generate(itemCount, (index) => 
             Card(
+              color: cardColor,
               margin: const EdgeInsets.only(bottom: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
+              child: const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('العنوان الرئيسي', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 12),
-                    const Text('وصف للعنصر يمتد على عدة أسطر لإظهار حالة التحميل بشكل جيد وواضح للمستخدم.'),
-                    const SizedBox(height: 12),
+                    Text('العنوان الرئيسي', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 12),
+                    Text('وصف للعنصر يمتد على عدة أسطر لإظهار حالة التحميل بشكل جيد وواضح للمستخدم.'),
+                    SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text('التاريخ: 2024-01-01'),
                         Icon(Icons.more_vert),
                       ],
@@ -108,6 +116,9 @@ class SkeletonHomeLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
     return Skeletonizer(
       enabled: true,
       child: SingleChildScrollView(
@@ -120,17 +131,17 @@ class SkeletonHomeLoading extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: cardColor,
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Row(
+              child: const Row(
                 children: [
-                  const CircleAvatar(radius: 28, child: Icon(Icons.person)),
-                  const SizedBox(width: 16),
+                  CircleAvatar(radius: 28, child: Icon(Icons.person)),
+                  SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text('أهلاً بك في التطبيق', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         SizedBox(height: 4),
                         Text('معلومات إضافية عن المستخدم'),
@@ -147,7 +158,7 @@ class SkeletonHomeLoading extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -188,6 +199,9 @@ class SkeletonStudentsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
     return Skeletonizer(
       enabled: true,
       child: GridView.builder(
@@ -203,12 +217,12 @@ class SkeletonStudentsGrid extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 CircleAvatar(radius: 32, child: Icon(Icons.person, size: 32)),
                 SizedBox(height: 12),
                 Text('اسم الطالب', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -239,6 +253,10 @@ class SkeletonNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final iconBgColor = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE6E6FA);
+
     return Skeletonizer(
       enabled: true,
       child: ListView.separated(
@@ -249,7 +267,7 @@ class SkeletonNotifications extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -257,17 +275,17 @@ class SkeletonNotifications extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE6E6FA),
+                  decoration: BoxDecoration(
+                    color: iconBgColor,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.notifications_active_rounded, size: 24),
                 ),
                 const SizedBox(width: 16),
-                Expanded(
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text('عنوان الإشعار', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       SizedBox(height: 6),
                       Text('محتوى الإشعار يظهر هنا مع تفاصيل إضافية عن الحدث'),
@@ -292,6 +310,10 @@ class SkeletonDailyReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final badgeColor = isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade200;
+
     return Skeletonizer(
       enabled: true,
       child: ListView.separated(
@@ -302,7 +324,7 @@ class SkeletonDailyReports extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -314,13 +336,13 @@ class SkeletonDailyReports extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: badgeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text('حاضر'),
                     ),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
@@ -337,26 +359,26 @@ class SkeletonDailyReports extends StatelessWidget {
                 const SizedBox(height: 12),
                 const Divider(height: 1),
                 const SizedBox(height: 12),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
+                  children: [
                     Row(
                       children: [
                         Text('5', style: TextStyle(fontWeight: FontWeight.bold)),
                         SizedBox(width: 4),
-                        Icon(Icons.star_rounded, color: Color(0xFFFFCC00), size: 18),
+                        Icon(Icons.star_rounded, size: 18),
                       ],
                     ),
                     Row(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green, size: 18),
+                        Icon(Icons.check_circle, size: 18),
                         SizedBox(width: 4),
                         Text('استراحة'),
                       ],
                     ),
                     Row(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green, size: 18),
+                        Icon(Icons.check_circle, size: 18),
                         SizedBox(width: 4),
                         Text('وجبة'),
                       ],

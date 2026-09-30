@@ -60,6 +60,7 @@ dependencies:
   url_launcher: ^6.3.2
   connectivity_plus: ^6.1.4
   skeletonizer: ^3.0.0
+  cached_network_image: ^4.0.3
 
 dev_dependencies:
   flutter_test:

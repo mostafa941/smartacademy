@@ -85,12 +85,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
                 Positioned(
-                  top: -80,  // فوق الكلمة بعيد
-                  right: 10,
-                  child: Icon(
-                    Icons.star_rounded,
-                    color: const Color(0xFF9B6BFF),
-                    size: 60,
+                  top: -35,
+                  right: -55,
+                  child: Transform.rotate(
+                    angle: 0.25, // لفة بسيطة زي الصورة
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        const Icon(
+                          Icons.star_rounded,
+                          color: Color(0xFF724F96), // لون التطبيق الأساسي
+                          size: 65,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 4), // تظبيط النص في النص بالظبط
+                          child: const Text(
+                            'SMART',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

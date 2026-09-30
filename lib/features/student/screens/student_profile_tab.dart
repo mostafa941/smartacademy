@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,20 +47,20 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
           // Refresh provider
           context.read<StudentProvider>().fetchStudentData(widget.userId, isParentPhone: false);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم تحديث الصورة بنجاح!')),
+            const SnackBar(content: Text('ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ØµÙˆØ±Ø© Ø¨Ù†Ø¬Ø§Ø­!')),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('فشل في رفع الصورة.')),
+            const SnackBar(content: Text('ÙØ´Ù„ ÙÙŠ Ø±ÙØ¹ Ø§Ù„ØµÙˆØ±Ø©.')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('حدث خطأ: $e')),
+          SnackBar(content: Text('Ø­Ø¯Ø« Ø®Ø·Ø£: $e')),
         );
       }
     } finally {
@@ -87,8 +88,8 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
       });
     }
 
-    final studentName = (student.name.trim().isNotEmpty) ? student.name : 'طالب';
-    final studentGrade = (student.grade.trim().isNotEmpty) ? student.grade : 'غير محدد';
+    final studentName = (student.name.trim().isNotEmpty) ? student.name : 'Ø·Ø§Ù„Ø¨';
+    final studentGrade = (student.grade.trim().isNotEmpty) ? student.grade : 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
     final initial = studentName.isNotEmpty ? studentName[0] : '?';
 
     return SingleChildScrollView(
@@ -104,7 +105,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
               iconAlignment: IconAlignment.end,
               icon: Icon(Icons.arrow_forward_rounded, color: textColor),
               label: Text(
-                'عودة القائمة',
+                'Ø¹ÙˆØ¯Ø© Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©',
                 style: TextStyle(
                   color: textColor,
                   fontWeight: FontWeight.bold,
@@ -125,7 +126,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
               radius: 50,
               backgroundColor: Colors.grey.shade300,
               backgroundImage:
-                  student.photoUrl != null && student.photoUrl!.isNotEmpty ? NetworkImage(student.photoUrl!) : null,
+                  student.photoUrl != null && student.photoUrl!.isNotEmpty ? CachedNetworkImageProvider(student.photoUrl!) : null,
               child: (student.photoUrl == null || student.photoUrl!.isEmpty)
                   ? Text(
                       initial,
@@ -152,7 +153,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
           ),
           const SizedBox(height: 8),
           Text(
-            'الصف: $studentGrade',
+            'Ø§Ù„ØµÙ: $studentGrade',
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.grey,
@@ -174,7 +175,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
               ),
             ),
             child: const Text(
-              'عودة للرئيسية',
+              'Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
@@ -182,7 +183,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Student Info Section
           Text(
-            'بيانات الطالب',
+            'Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø·Ø§Ù„Ø¨',
             style: TextStyle(
               color: textColor,
               fontSize: 18,
@@ -193,7 +194,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Student Name
           Text(
-            'اسم الطالب:',
+            'Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -213,7 +214,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Parent Phone
           Text(
-            'رقم هاتف ولي الأمر:',
+            'Ø±Ù‚Ù… Ù‡Ø§ØªÙ ÙˆÙ„ÙŠ Ø§Ù„Ø£Ù…Ø±:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -234,7 +235,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Upload Image Placeholder
           Text(
-            'ارفع الصورة الشخصية:',
+            'Ø§Ø±ÙØ¹ Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ø´Ø®ØµÙŠØ©:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -267,3 +268,4 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
     );
   }
 }
+

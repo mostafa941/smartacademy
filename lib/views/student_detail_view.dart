@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
@@ -23,10 +24,10 @@ class StudentDetailView extends StatelessWidget {
         'english',
         'math',
         'Ucmath',
-        'عربي',
-        'حساب',
-        'قران',
-        'سلوكيات و اداب',
+        'Ø¹Ø±Ø¨ÙŠ',
+        'Ø­Ø³Ø§Ø¨',
+        'Ù‚Ø±Ø§Ù†',
+        'Ø³Ù„ÙˆÙƒÙŠØ§Øª Ùˆ Ø§Ø¯Ø§Ø¨',
       ],
     );
 
@@ -35,11 +36,11 @@ class StudentDetailView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // الشريط العلوي
+          // Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¹Ù„ÙˆÙŠ
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // أزرار التعديل والحذف على اليمين
+              // Ø£Ø²Ø±Ø§Ø± Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ ÙˆØ§Ù„Ø­Ø°Ù Ø¹Ù„Ù‰ Ø§Ù„ÙŠÙ…ÙŠÙ†
               Row(
                 children: [
                   ElevatedButton.icon(
@@ -48,7 +49,7 @@ class StudentDetailView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     icon: const Icon(Icons.edit, size: 18, color: Colors.white),
-                    label: const Text('تعديل', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    label: const Text('ØªØ¹Ø¯ÙŠÙ„', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -64,24 +65,24 @@ class StudentDetailView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     icon: const Icon(Icons.delete_outline, size: 18),
-                    label: const Text('حذف', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: const Text('Ø­Ø°Ù', style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () => _showDeleteDialog(context, student['id']),
                   ),
                 ],
               ),
 
-              // اسم الطالب والمرحلة وسهم الرجوع على الشمال
+              // Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨ ÙˆØ§Ù„Ù…Ø±Ø­Ù„Ø© ÙˆØ³Ù‡Ù… Ø§Ù„Ø±Ø¬ÙˆØ¹ Ø¹Ù„Ù‰ Ø§Ù„Ø´Ù…Ø§Ù„
               Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'ملف الطالب : ${student['full_name'] ?? ''}',
+                        'Ù…Ù„Ù Ø§Ù„Ø·Ø§Ù„Ø¨ : ${student['full_name'] ?? ''}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'المرحله : ${student['age_group'] ?? ''}',
+                        'Ø§Ù„Ù…Ø±Ø­Ù„Ù‡ : ${student['age_group'] ?? ''}',
                         style: const TextStyle(color: Colors.black45, fontSize: 13),
                       ),
                     ],
@@ -91,7 +92,7 @@ class StudentDetailView extends StatelessWidget {
                     radius: 25,
                     backgroundColor: Colors.grey[200],
                     backgroundImage: student['photo_url'] != null && student['photo_url'].toString().isNotEmpty
-                        ? NetworkImage(student['photo_url'])
+                        ? CachedNetworkImageProvider(student['photo_url'])
                         : null,
                     child: student['photo_url'] == null || student['photo_url'].toString().isEmpty
                         ? Text(
@@ -110,7 +111,7 @@ class StudentDetailView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'عودة',
+                          'Ø¹ÙˆØ¯Ø©',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 16,
@@ -128,33 +129,33 @@ class StudentDetailView extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // كروت البيانات والحضور
+          // ÙƒØ±ÙˆØª Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ÙˆØ§Ù„Ø­Ø¶ÙˆØ±
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. كارت البيانات الأساسية والمواد (جهة اليمين)
+              // 1. ÙƒØ§Ø±Øª Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ù„Ù…ÙˆØ§Ø¯ (Ø¬Ù‡Ø© Ø§Ù„ÙŠÙ…ÙŠÙ†)
               Expanded(
                 child: _buildCard(
-                  title: 'البيانات الأساسية',
+                  title: 'Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // رقم ولي الطالب
+                      // Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø·Ø§Ù„Ø¨
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('رقم ولي الطالب:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø·Ø§Ù„Ø¨:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           Text(student['parent_phone'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                         ],
                       ),
                       const SizedBox(height: 16),
 
-                      // المواد
+                      // Ø§Ù„Ù…ÙˆØ§Ø¯
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('المواد:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('Ø§Ù„Ù…ÙˆØ§Ø¯:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Directionality(
@@ -173,12 +174,12 @@ class StudentDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // ملاحظة من المدرس
+                      // Ù…Ù„Ø§Ø­Ø¸Ø© Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('ملاحظه من المدرس:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('Ù…Ù„Ø§Ø­Ø¸Ù‡ Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -195,23 +196,23 @@ class StudentDetailView extends StatelessWidget {
               ),
               const SizedBox(width: 20),
 
-              // 2. كارت الحضور والغياب (جهة اليسار)
+              // 2. ÙƒØ§Ø±Øª Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨ (Ø¬Ù‡Ø© Ø§Ù„ÙŠØ³Ø§Ø±)
               Expanded(
                 child: _buildCard(
-                  title: 'الحضور والغياب',
+                  title: 'Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨',
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildCountColumn(
                         context: context,
-                        label: 'غُياب',
+                        label: 'ØºÙÙŠØ§Ø¨',
                         value: '$absentCount',
                         isPresent: false,
                         student: student,
                       ),
                       _buildCountColumn(
                         context: context,
-                        label: 'حضور',
+                        label: 'Ø­Ø¶ÙˆØ±',
                         value: '$presentCount',
                         isPresent: true,
                         student: student,
@@ -232,10 +233,10 @@ class StudentDetailView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('تأكيد الحذف', textAlign: TextAlign.right),
-        content: const Text('هل أنت متأكد من حذف هذا الطالب نهائياً من النظام؟'),
+        title: const Text('ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø­Ø°Ù', textAlign: TextAlign.right),
+        content: const Text('Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ø·Ø§Ù„Ø¨ Ù†Ù‡Ø§Ø¦ÙŠØ§Ù‹ Ù…Ù† Ø§Ù„Ù†Ø¸Ø§Ù…ØŸ'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Ø¥Ù„ØºØ§Ø¡')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
@@ -243,11 +244,11 @@ class StudentDetailView extends StatelessWidget {
               final success = await provider.deleteStudent(studentId);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? 'تم حذف الطالب بنجاح' : 'حدث خطأ أثناء الحذف')),
+                  SnackBar(content: Text(success ? 'ØªÙ… Ø­Ø°Ù Ø§Ù„Ø·Ø§Ù„Ø¨ Ø¨Ù†Ø¬Ø§Ø­' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­Ø°Ù')),
                 );
               }
             },
-            child: const Text('نعم، إحذف', style: TextStyle(color: Colors.white)),
+            child: const Text('Ù†Ø¹Ù…ØŒ Ø¥Ø­Ø°Ù', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -258,7 +259,7 @@ class StudentDetailView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        // استخدام درجة أزرق خفيفة وهادئة مع انحناء خفيف وبوردر لطيف
+        // Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¯Ø±Ø¬Ø© Ø£Ø²Ø±Ù‚ Ø®ÙÙŠÙØ© ÙˆÙ‡Ø§Ø¯Ø¦Ø© Ù…Ø¹ Ø§Ù†Ø­Ù†Ø§Ø¡ Ø®ÙÙŠÙ ÙˆØ¨ÙˆØ±Ø¯Ø± Ù„Ø·ÙŠÙ
         color: const Color(0xFF724F96),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -312,7 +313,7 @@ class StudentDetailView extends StatelessWidget {
             children: [
               Icon(Icons.touch_app_rounded, size: 11, color: Colors.grey.shade400),
               const SizedBox(width: 3),
-              Text('اضغط للتفاصيل', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+              Text('Ø§Ø¶ØºØ· Ù„Ù„ØªÙØ§ØµÙŠÙ„', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
             ],
           ),
         ],
@@ -320,3 +321,4 @@ class StudentDetailView extends StatelessWidget {
     );
   }
 }
+

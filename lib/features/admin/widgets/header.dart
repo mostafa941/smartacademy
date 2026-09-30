@@ -20,6 +20,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   final _supabase = Supabase.instance.client;
   int _unreadNotifications = 0;
   RealtimeChannel? _notificationsChannel;
+  RealtimeChannel? _complaintsChannel; // قناة لمتابعة الشكاوى الجديدة
 
   @override
   void initState() {
@@ -31,19 +32,32 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   void dispose() {
     _notificationsChannel?.unsubscribe();
+    _complaintsChannel?.unsubscribe();
     super.dispose();
   }
 
   Future<void> _fetchUnreadCount() async {
     try {
-      final result = await _supabase
+      // عدد الإشعارات غير المقروءة من admin_notifications
+      final notifResult = await _supabase
           .from('admin_notifications')
           .select('id')
           .eq('is_read', false);
-      
+
+      // عدد الشكاوى غير المقروءة من complaints (احتياطي)
+      final complaintResult = await _supabase
+          .from('complaints')
+          .select('id')
+          .eq('is_read', false);
+
+      // نأخذ الأكبر من الاثنين (في الغالب admin_notifications هو الصحيح)
+      final notifCount = (notifResult as List).length;
+      final complaintCount = (complaintResult as List).length;
+      final total = notifCount > complaintCount ? notifCount : complaintCount;
+
       if (mounted) {
         setState(() {
-          _unreadNotifications = (result as List).length;
+          _unreadNotifications = total;
         });
       }
     } catch (e) {
@@ -52,6 +66,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   void _setupRealtime() {
+    // قناة 1: متابعة إشعارات الأدمن
     _notificationsChannel = _supabase
         .channel('admin_notifications_channel')
         .onPostgresChanges(
@@ -61,8 +76,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           callback: (payload) {
             debugPrint('🔔 New admin notification received');
             _fetchUnreadCount();
-            
-            // عرض SnackBar للإشعار
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -72,6 +85,20 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 ),
               );
             }
+          },
+        )
+        .subscribe();
+
+    // قناة 2: متابعة الشكاوى الجديدة مباشرة
+    _complaintsChannel = _supabase
+        .channel('complaints_header_channel')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'complaints',
+          callback: (payload) async {
+            debugPrint('🔔 New complaint received → updating bell');
+            _fetchUnreadCount();
           },
         )
         .subscribe();

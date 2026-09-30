@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/widgets/add_teacher_modal.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
@@ -11,7 +12,7 @@ class TeachersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // التبديل إلى شاشة التفاصيل فور اختيار مدرس
+    // Ø§Ù„ØªØ¨Ø¯ÙŠÙ„ Ø¥Ù„Ù‰ Ø´Ø§Ø´Ø© Ø§Ù„ØªÙØ§ØµÙŠÙ„ ÙÙˆØ± Ø§Ø®ØªÙŠØ§Ø± Ù…Ø¯Ø±Ø³
     if (provider.selectedTeacher != null) {
       return TeacherDetailView(provider: provider);
     }
@@ -20,7 +21,7 @@ class TeachersView extends StatelessWidget {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
-          // شريط إضافة مدرس والبحث
+          // Ø´Ø±ÙŠØ· Ø¥Ø¶Ø§ÙØ© Ù…Ø¯Ø±Ø³ ÙˆØ§Ù„Ø¨Ø­Ø«
           Row(
             children: [
               ElevatedButton.icon(
@@ -33,7 +34,7 @@ class TeachersView extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.add, color: Colors.white, size: 18),
                 label: const Text(
-                  'اضافة مدرس جديد',
+                  'Ø§Ø¶Ø§ÙØ© Ù…Ø¯Ø±Ø³ Ø¬Ø¯ÙŠØ¯',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -54,7 +55,7 @@ class TeachersView extends StatelessWidget {
                   child: TextField(
                     onChanged: (val) => provider.setTeacherSearchQuery(val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث بأسم المدرس او المادة...',
+                      hintText: 'Ø§Ø¨Ø­Ø« Ø¨Ø£Ø³Ù… Ø§Ù„Ù…Ø¯Ø±Ø³ Ø§Ùˆ Ø§Ù„Ù…Ø§Ø¯Ø©...',
                       hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
                       fillColor: Colors.white,
                       filled: true,
@@ -71,7 +72,7 @@ class TeachersView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // جدول المدرسين
+          // Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ù…Ø¯Ø±Ø³ÙŠÙ†
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -82,7 +83,7 @@ class TeachersView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: ListView(
                   children: [
-                    // الهيدر
+                    // Ø§Ù„Ù‡ÙŠØ¯Ø±
                     Container(
                       color: AppColors.sidebarBg,
                       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
@@ -91,7 +92,7 @@ class TeachersView extends StatelessWidget {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              'اسم المدرس',
+                              'Ø§Ø³Ù… Ø§Ù„Ù…Ø¯Ø±Ø³',
                               textAlign: TextAlign.right,
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -99,7 +100,7 @@ class TeachersView extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              'الفئة العمرية',
+                              'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ©',
                               textAlign: TextAlign.right,
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -107,7 +108,7 @@ class TeachersView extends StatelessWidget {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              'رقم هاتف المدرس',
+                              'Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ù„Ù…Ø¯Ø±Ø³',
                               textAlign: TextAlign.right,
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -115,7 +116,7 @@ class TeachersView extends StatelessWidget {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              'المادة',
+                              'Ø§Ù„Ù…Ø§Ø¯Ø©',
                               textAlign: TextAlign.right,
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -123,7 +124,7 @@ class TeachersView extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              'الأجراءات',
+                              'Ø§Ù„Ø£Ø¬Ø±Ø§Ø¡Ø§Øª',
                               textAlign: TextAlign.right,
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                             ),
@@ -132,11 +133,11 @@ class TeachersView extends StatelessWidget {
                       ),
                     ),
 
-                    // محتوى الصفوف
+                    // Ù…Ø­ØªÙˆÙ‰ Ø§Ù„ØµÙÙˆÙ
                     if (provider.filteredTeachers.isEmpty)
                       const Padding(
                         padding: EdgeInsets.all(32.0),
-                        child: Center(child: Text('لا توجد نتائج مطابقة')),
+                        child: Center(child: Text('Ù„Ø§ ØªÙˆØ¬Ø¯ Ù†ØªØ§Ø¦Ø¬ Ù…Ø·Ø§Ø¨Ù‚Ø©')),
                       )
                     else
                       ...provider.filteredTeachers.map((teacher) {
@@ -147,7 +148,7 @@ class TeachersView extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              // 1. اسم المدرس
+                              // 1. Ø§Ø³Ù… Ø§Ù„Ù…Ø¯Ø±Ø³
                               Expanded(
                                 flex: 3,
                                 child: Row(
@@ -156,7 +157,7 @@ class TeachersView extends StatelessWidget {
                                       radius: 16,
                                       backgroundColor: const Color(0xFFE6E6FA),
                                       backgroundImage: teacher['avatar_url'] != null && teacher['avatar_url'].toString().isNotEmpty
-                                          ? NetworkImage(teacher['avatar_url'])
+                                          ? CachedNetworkImageProvider(teacher['avatar_url'])
                                           : null,
                                       child: (teacher['avatar_url'] == null || teacher['avatar_url'].toString().isEmpty)
                                           ? Text(
@@ -183,7 +184,7 @@ class TeachersView extends StatelessWidget {
                                 ),
                               ),
 
-                              // 2. الفئة العمرية
+                              // 2. Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ©
                               Expanded(
                                 flex: 2,
                                 child: Align(
@@ -192,7 +193,7 @@ class TeachersView extends StatelessWidget {
                                 ),
                               ),
 
-                              // 3. رقم هاتف المدرس
+                              // 3. Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ù„Ù…Ø¯Ø±Ø³
                               Expanded(
                                 flex: 3,
                                 child: Text(
@@ -206,7 +207,7 @@ class TeachersView extends StatelessWidget {
                                 ),
                               ),
 
-                              // 4. المادة
+                              // 4. Ø§Ù„Ù…Ø§Ø¯Ø©
                               Expanded(
                                 flex: 3,
                                 child: Text(
@@ -220,7 +221,7 @@ class TeachersView extends StatelessWidget {
                                 ),
                               ),
 
-                              // 5. زر فتح الملف
+                              // 5. Ø²Ø± ÙØªØ­ Ø§Ù„Ù…Ù„Ù
                               Expanded(
                                 flex: 2,
                                 child: Align(
@@ -237,7 +238,7 @@ class TeachersView extends StatelessWidget {
                                       provider.selectTeacher(teacher);
                                     },
                                     child: const Text(
-                                      'فتح الملف',
+                                      'ÙØªØ­ Ø§Ù„Ù…Ù„Ù',
                                       style: TextStyle(
                                         color: AppColors.sidebarBg,
                                         fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 import '../providers/student_provider.dart';
@@ -65,35 +66,16 @@ class _StudentMainLayoutState extends State<StudentMainLayout> {
         isDark ? Colors.white54 : const Color(0xFF2A1B38).withOpacity(0.5);
 
     return PopScope(
-      canPop: false, // منع الرجوع للصفحات السابقة
+      canPop: false,
       onPopInvoked: (didPop) {
         if (!didPop) {
-          // إظهار dialog للخروج من التطبيق
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('الخروج من التطبيق', textAlign: TextAlign.right),
-              content: const Text('هل تريد الخروج من التطبيق؟', textAlign: TextAlign.right),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('إلغاء'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // الخروج من التطبيق
-                    Future.delayed(Duration.zero, () {
-                      if (context.mounted) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                      }
-                    });
-                  },
-                  child: const Text('خروج', style: TextStyle(color: Colors.red)),
-                ),
-              ],
-            ),
-          );
+          if (_currentIndex != 0) {
+            // الرجوع للصفحة الرئيسية أولاً
+            setState(() => _currentIndex = 0);
+          } else {
+            // الخروج من التطبيق للشاشة الرئيسية للهاتف بدون تسجيل خروج
+            SystemNavigator.pop();
+          }
         }
       },
       child: Directionality(

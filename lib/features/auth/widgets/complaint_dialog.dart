@@ -28,14 +28,18 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
         'name': _nameController.text.trim(),
         'phone': _phoneController.text.trim(),
         'complaint': _complaintController.text.trim(),
-        'is_read': false,  // لتمييز الشكاوى الجديدة
+        'is_read': false,
       });
 
-      // إرسال إشعار للأدمن (يمكن إنشاء جدول admin_notifications أو استخدام نظام خارجي)
+      // إرسال إشعار للأدمن في جدول admin_notifications
       try {
-        // يمكن إضافة نظام إشعارات للأدمن هنا في المستقبل
-        // مثال: Firebase Cloud Messaging أو OneSignal
-        debugPrint('✅ تم إرسال شكوى جديدة: ${_nameController.text}');
+        await supabase.from('admin_notifications').insert({
+          'title': '📩 شكوى جديدة من ${_nameController.text.trim()}',
+          'message': _complaintController.text.trim(),
+          'is_read': false,
+          'type': 'complaint',
+        });
+        debugPrint('✅ تم إرسال شكوى جديدة وإشعار للأدمن: ${_nameController.text}');
       } catch (e) {
         debugPrint('⚠️ فشل إرسال الإشعار للأدمن: $e');
       }

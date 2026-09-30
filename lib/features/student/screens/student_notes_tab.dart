@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
@@ -39,7 +40,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
     super.dispose();
   }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   static int _getWeekNumber(DateTime date) {
     final startOfYear = DateTime(date.year, 1, 1);
@@ -49,12 +50,12 @@ class _StudentNotesTabState extends State<StudentNotesTab>
 
   String _formatDate(DateTime date) {
     const days = [
-      'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس',
-      'الجمعة', 'السبت', 'الأحد'
+      'Ø§Ù„Ø§Ø«Ù†ÙŠÙ†', 'Ø§Ù„Ø«Ù„Ø§Ø«Ø§Ø¡', 'Ø§Ù„Ø£Ø±Ø¨Ø¹Ø§Ø¡', 'Ø§Ù„Ø®Ù…ÙŠØ³',
+      'Ø§Ù„Ø¬Ù…Ø¹Ø©', 'Ø§Ù„Ø³Ø¨Øª', 'Ø§Ù„Ø£Ø­Ø¯'
     ];
     const months = [
-      '', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      '', 'ÙŠÙ†Ø§ÙŠØ±', 'ÙØ¨Ø±Ø§ÙŠØ±', 'Ù…Ø§Ø±Ø³', 'Ø£Ø¨Ø±ÙŠÙ„', 'Ù…Ø§ÙŠÙˆ', 'ÙŠÙˆÙ†ÙŠÙˆ',
+      'ÙŠÙˆÙ„ÙŠÙˆ', 'Ø£ØºØ³Ø·Ø³', 'Ø³Ø¨ØªÙ…Ø¨Ø±', 'Ø£ÙƒØªÙˆØ¨Ø±', 'Ù†ÙˆÙÙ…Ø¨Ø±', 'Ø¯ÙŠØ³Ù…Ø¨Ø±'
     ];
     final dayName = days[date.weekday - 1];
     return '$dayName ${date.day} ${months[date.month]}';
@@ -65,26 +66,26 @@ class _StudentNotesTabState extends State<StudentNotesTab>
     final startOfWeek = startOfYear.add(Duration(days: (week - 1) * 7));
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
     const months = [
-      '', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      '', 'ÙŠÙ†Ø§ÙŠØ±', 'ÙØ¨Ø±Ø§ÙŠØ±', 'Ù…Ø§Ø±Ø³', 'Ø£Ø¨Ø±ÙŠÙ„', 'Ù…Ø§ÙŠÙˆ', 'ÙŠÙˆÙ†ÙŠÙˆ',
+      'ÙŠÙˆÙ„ÙŠÙˆ', 'Ø£ØºØ³Ø·Ø³', 'Ø³Ø¨ØªÙ…Ø¨Ø±', 'Ø£ÙƒØªÙˆØ¨Ø±', 'Ù†ÙˆÙÙ…Ø¨Ø±', 'Ø¯ÙŠØ³Ù…Ø¨Ø±'
     ];
-    return '${startOfWeek.day} ${months[startOfWeek.month]} – ${endOfWeek.day} ${months[endOfWeek.month]}';
+    return '${startOfWeek.day} ${months[startOfWeek.month]} â€“ ${endOfWeek.day} ${months[endOfWeek.month]}';
   }
 
   Color _ratingColor(String rating) {
     switch (rating) {
-      case 'مميز':
+      case 'Ù…Ù…ÙŠØ²':
         return Colors.green;
-      case 'جيد جداً':
+      case 'Ø¬ÙŠØ¯ Ø¬Ø¯Ø§Ù‹':
         return const Color(0xFF724F96);
-      case 'جيد':
+      case 'Ø¬ÙŠØ¯':
         return Colors.orange;
       default:
         return Colors.red;
     }
   }
 
-  // ── Date Picker ───────────────────────────────────────────────────────────
+  // â”€â”€ Date Picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> _pickDate(BuildContext ctx, StudentProvider provider) async {
     final isDark = Theme.of(ctx).brightness == Brightness.dark;
@@ -115,7 +116,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
     }
   }
 
-  // ── Week Picker ───────────────────────────────────────────────────────────
+  // â”€â”€ Week Picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<void> _pickWeek(BuildContext ctx, StudentProvider provider) async {
     final isDark = Theme.of(ctx).brightness == Brightness.dark;
@@ -153,7 +154,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'اختر الأسبوع',
+                  'Ø§Ø®ØªØ± Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 18,
@@ -220,7 +221,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
                       Column(
                         children: [
                           Text(
-                            'الأسبوع $tempWeek',
+                            'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ $tempWeek',
                             style: TextStyle(
                               color: textColor,
                               fontSize: 18,
@@ -263,7 +264,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
                       ),
                     ),
                     child: const Text(
-                      'عرض التقييمات',
+                      'Ø¹Ø±Ø¶ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -280,7 +281,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
     );
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────────
+  // â”€â”€ Build â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   Widget build(BuildContext context) {
@@ -296,7 +297,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                'التقييمات',
+                'Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   fontSize: 26,
@@ -307,7 +308,7 @@ class _StudentNotesTabState extends State<StudentNotesTab>
             ),
             const SizedBox(height: 16),
 
-            // ── Tab Bar ──
+            // â”€â”€ Tab Bar â”€â”€
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Container(
@@ -337,15 +338,15 @@ class _StudentNotesTabState extends State<StudentNotesTab>
                   labelStyle: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 14),
                   tabs: const [
-                    Tab(text: 'يومية'),
-                    Tab(text: 'أسبوعية'),
+                    Tab(text: 'ÙŠÙˆÙ…ÙŠØ©'),
+                    Tab(text: 'Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©'),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 16),
 
-            // ── Tab Views ──
+            // â”€â”€ Tab Views â”€â”€
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -373,9 +374,9 @@ class _StudentNotesTabState extends State<StudentNotesTab>
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // DAILY VIEW
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 class _DailyView extends StatelessWidget {
   final Future<void> Function(BuildContext, StudentProvider) onPickDate;
@@ -412,7 +413,7 @@ class _DailyView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Date Picker Card ──
+          // â”€â”€ Date Picker Card â”€â”€
           GestureDetector(
             onTap: () => onPickDate(context, provider),
             child: Container(
@@ -444,7 +445,7 @@ class _DailyView extends StatelessWidget {
                             color: Colors.white, size: 16),
                         SizedBox(width: 6),
                         Text(
-                          'تغيير',
+                          'ØªØºÙŠÙŠØ±',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -457,7 +458,7 @@ class _DailyView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        isToday ? 'اليوم' : 'تاريخ محدد',
+                        isToday ? 'Ø§Ù„ÙŠÙˆÙ…' : 'ØªØ§Ø±ÙŠØ® Ù…Ø­Ø¯Ø¯',
                         style: const TextStyle(
                             color: Colors.white70, fontSize: 11),
                       ),
@@ -484,7 +485,7 @@ class _DailyView extends StatelessWidget {
                     ? _buildEmpty(textColor)
                     : ListView(
                         children: [
-                          // ── Daily Stars Cards ──
+                          // â”€â”€ Daily Stars Cards â”€â”€
                           ...dailyReports.map((daily) => _buildDailyStarsCard(
                                 stars: daily.stars,
                                 isPresent: daily.isPresent,
@@ -499,7 +500,7 @@ class _DailyView extends StatelessWidget {
                                 isDark: isDark,
                               )),
 
-                          // ── Supervisor Reviews ──
+                          // â”€â”€ Supervisor Reviews â”€â”€
                           ...filteredReviews.map((review) => _buildReviewCard(
                                 review: review,
                                 textColor: textColor,
@@ -525,7 +526,7 @@ class _DailyView extends StatelessWidget {
           Icon(Icons.star_border_rounded, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'لا يوجد تقييمات لهذا اليوم',
+            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ù„Ù‡Ø°Ø§ Ø§Ù„ÙŠÙˆÙ…',
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.bold,
@@ -534,7 +535,7 @@ class _DailyView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'اختر يوماً آخر لعرض التقييمات',
+            'Ø§Ø®ØªØ± ÙŠÙˆÙ…Ø§Ù‹ Ø¢Ø®Ø± Ù„Ø¹Ø±Ø¶ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -583,7 +584,7 @@ class _DailyView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      teacherName ?? 'المدرس',
+                      teacherName ?? 'Ø§Ù„Ù…Ø¯Ø±Ø³',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 16,
@@ -643,7 +644,7 @@ class _DailyView extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      isPresent ? 'حاضر' : 'غائب',
+                      isPresent ? 'Ø­Ø§Ø¶Ø±' : 'ØºØ§Ø¦Ø¨',
                       style: TextStyle(
                         color: isPresent ? Colors.green : Colors.red,
                         fontWeight: FontWeight.bold,
@@ -657,7 +658,7 @@ class _DailyView extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'التقييم اليومي',
+                    'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø§Ù„ÙŠÙˆÙ…ÙŠ',
                     style: TextStyle(
                       color: textColor,
                       fontSize: 15,
@@ -698,8 +699,8 @@ class _DailyView extends StatelessWidget {
           Center(
             child: Text(
               stars == 0
-                  ? 'لم يتم التقييم بعد'
-                  : '$stars من ٥ ${_starsLabel(stars)}',
+                  ? 'Ù„Ù… ÙŠØªÙ… Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø¨Ø¹Ø¯'
+                  : '$stars Ù…Ù† Ù¥ ${_starsLabel(stars)}',
               style: TextStyle(
                 color: stars == 0 ? Colors.grey : const Color(0xFFFFCC00),
                 fontWeight: FontWeight.bold,
@@ -717,14 +718,14 @@ class _DailyView extends StatelessWidget {
             children: [
               _iconChip(
                 icon: tookBreak ? Icons.check_circle : Icons.cancel,
-                label: 'الاستراحة',
+                label: 'Ø§Ù„Ø§Ø³ØªØ±Ø§Ø­Ø©',
                 active: tookBreak,
               ),
               Container(
                   width: 1, height: 28, color: Colors.grey.withValues(alpha: 0.3)),
               _iconChip(
                 icon: ateMeal ? Icons.check_circle : Icons.cancel,
-                label: 'الوجبة',
+                label: 'Ø§Ù„ÙˆØ¬Ø¨Ø©',
                 active: ateMeal,
               ),
             ],
@@ -785,15 +786,15 @@ class _DailyView extends StatelessWidget {
   String _starsLabel(int stars) {
     switch (stars) {
       case 1:
-        return '⭐';
+        return 'â­';
       case 2:
-        return '⭐⭐';
+        return 'â­â­';
       case 3:
-        return '⭐⭐⭐';
+        return 'â­â­â­';
       case 4:
-        return '⭐⭐⭐⭐';
+        return 'â­â­â­â­';
       case 5:
-        return '⭐⭐⭐⭐⭐ مميز!';
+        return 'â­â­â­â­â­ Ù…Ù…ÙŠØ²!';
       default:
         return '';
     }
@@ -861,7 +862,7 @@ class _DailyView extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'أ. ${review.teacherName}',
+                        'Ø£. ${review.teacherName}',
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12,
@@ -876,7 +877,7 @@ class _DailyView extends StatelessWidget {
                         ? const Color(0xFF2A2A2A)
                         : const Color(0xFFEEEEEE),
                     backgroundImage: (review.teacherPhotoUrl != null && review.teacherPhotoUrl!.isNotEmpty)
-                        ? NetworkImage(review.teacherPhotoUrl!)
+                        ? CachedNetworkImageProvider(review.teacherPhotoUrl!)
                         : null,
                     child: (review.teacherPhotoUrl == null || review.teacherPhotoUrl!.isEmpty)
                         ? Icon(Icons.person_rounded, color: textColor, size: 20)
@@ -904,7 +905,7 @@ class _DailyView extends StatelessWidget {
   /// Builds a coloured avatar circle for a teacher
   Widget _buildTeacherAvatar({String? name, String? photoUrl}) {
     final bool hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
-    final String initial = (name != null && name.isNotEmpty) ? name.trim()[0] : 'م';
+    final String initial = (name != null && name.isNotEmpty) ? name.trim()[0] : 'Ù…';
 
     // Pick a consistent colour based on the initial
     final List<List<Color>> palettes = [
@@ -937,7 +938,7 @@ class _DailyView extends StatelessWidget {
         ],
       ),
       child: hasPhoto
-          ? ClipOval(child: Image.network(photoUrl!, fit: BoxFit.cover, width: 44, height: 44))
+          ? ClipOval(child: CachedNetworkImage(imageUrl: photoUrl!, fit: BoxFit.cover, width: 44, height: 44))
           : Center(
               child: Text(
                 initial,
@@ -952,9 +953,9 @@ class _DailyView extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // WEEKLY VIEW
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 class _WeeklyView extends StatelessWidget {
   final Future<void> Function(BuildContext, StudentProvider) onPickWeek;
@@ -983,7 +984,7 @@ class _WeeklyView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Week Picker Card ──
+          // â”€â”€ Week Picker Card â”€â”€
           GestureDetector(
             onTap: () => onPickWeek(context, provider),
             child: Container(
@@ -1020,7 +1021,7 @@ class _WeeklyView extends StatelessWidget {
                             color: Colors.white, size: 16),
                         SizedBox(width: 6),
                         Text(
-                          'تغيير',
+                          'ØªØºÙŠÙŠØ±',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -1033,7 +1034,7 @@ class _WeeklyView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'الأسبوع $week - $year',
+                        'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ $week - $year',
                         style: const TextStyle(
                             color: Colors.white70, fontSize: 11),
                       ),
@@ -1078,7 +1079,7 @@ class _WeeklyView extends StatelessWidget {
               size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'لا يوجد تقييمات أسبوعية',
+            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.bold,
@@ -1087,7 +1088,7 @@ class _WeeklyView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'اختر أسبوعاً آخر لعرض التقييمات',
+            'Ø§Ø®ØªØ± Ø£Ø³Ø¨ÙˆØ¹Ø§Ù‹ Ø¢Ø®Ø± Ù„Ø¹Ø±Ø¶ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -1124,7 +1125,7 @@ class _WeeklyView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      report.teacherName ?? 'المدرس',
+                      report.teacherName ?? 'Ø§Ù„Ù…Ø¯Ø±Ø³',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 16,
@@ -1187,8 +1188,8 @@ class _WeeklyView extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       report.completedDuties
-                          ? 'أتم الواجبات'
-                          : 'لم يتم الواجبات',
+                          ? 'Ø£ØªÙ… Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª'
+                          : 'Ù„Ù… ÙŠØªÙ… Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª',
                       style: TextStyle(
                         color: report.completedDuties
                             ? Colors.green
@@ -1204,7 +1205,7 @@ class _WeeklyView extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'تقرير أسبوعي',
+                    'ØªÙ‚Ø±ÙŠØ± Ø£Ø³Ø¨ÙˆØ¹ÙŠ',
                     style: TextStyle(
                       color: textColor,
                       fontSize: 15,
@@ -1232,7 +1233,7 @@ class _WeeklyView extends StatelessWidget {
 
           // Completed lessons
           if (report.completedLessons.isNotEmpty &&
-              report.completedLessons != 'لا يوجد') ...[
+              report.completedLessons != 'Ù„Ø§ ÙŠÙˆØ¬Ø¯') ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -1253,7 +1254,7 @@ class _WeeklyView extends StatelessWidget {
           ],
 
           // Note
-          if (report.note.isNotEmpty && report.note != 'لا يوجد')
+          if (report.note.isNotEmpty && report.note != 'Ù„Ø§ ÙŠÙˆØ¬Ø¯')
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -1305,7 +1306,7 @@ class _WeeklyView extends StatelessWidget {
   /// Builds a coloured avatar circle for a teacher
   Widget _buildTeacherAvatar({String? name, String? photoUrl}) {
     final bool hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
-    final String initial = (name != null && name.isNotEmpty) ? name.trim()[0] : 'م';
+    final String initial = (name != null && name.isNotEmpty) ? name.trim()[0] : 'Ù…';
 
     final List<List<Color>> palettes = [
       [const Color(0xFF6B4EFF), const Color(0xFF9B6BFF)],
@@ -1340,7 +1341,7 @@ class _WeeklyView extends StatelessWidget {
       ),
       child: hasPhoto
           ? ClipOval(
-              child: Image.network(photoUrl!,
+              child: CachedNetworkImage(imageUrl: photoUrl!,
                   fit: BoxFit.cover, width: 44, height: 44))
           : Center(
               child: Text(
@@ -1355,3 +1356,4 @@ class _WeeklyView extends StatelessWidget {
     );
   }
 }
+

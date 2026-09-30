@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +31,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
 
   String _fullName = '';
   String _jobDescription = '';
-  String _teacherTitle = ''; // e.g. معلمة عربي - فئة KG1, KG2
+  String _teacherTitle = ''; // e.g. Ù…Ø¹Ù„Ù…Ø© Ø¹Ø±Ø¨ÙŠ - ÙØ¦Ø© KG1, KG2
   String _avatarUrl = '';
 
   late TextEditingController _nameController;
@@ -89,12 +90,12 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           .join(', ');
 
       String title = '';
-      if (subjects.isNotEmpty) title += 'معلم $subjects';
+      if (subjects.isNotEmpty) title += 'Ù…Ø¹Ù„Ù… $subjects';
       if (stages.isNotEmpty) {
         if (title.isNotEmpty) title += ' - ';
-        title += 'فئة $stages';
+        title += 'ÙØ¦Ø© $stages';
       }
-      _teacherTitle = title.isEmpty ? 'معلم' : title;
+      _teacherTitle = title.isEmpty ? 'Ù…Ø¹Ù„Ù…' : title;
 
       _nameController.text = _fullName;
       _descController.text = _jobDescription;
@@ -124,7 +125,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم حفظ التعديلات بنجاح')),
+          const SnackBar(content: Text('ØªÙ… Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª Ø¨Ù†Ø¬Ø§Ø­')),
         );
         setState(() {
           _fullName = _nameController.text.trim();
@@ -135,7 +136,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
       debugPrint('Error saving profile: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('حدث خطأ أثناء الحفظ')),
+          const SnackBar(content: Text('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­ÙØ¸')),
         );
       }
     } finally {
@@ -168,20 +169,20 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           });
           widget.onAvatarUpdated?.call(secureUrl);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم تحديث الصورة بنجاح!')),
+            const SnackBar(content: Text('ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ØµÙˆØ±Ø© Ø¨Ù†Ø¬Ø§Ø­!')),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('فشل في رفع الصورة.')),
+            const SnackBar(content: Text('ÙØ´Ù„ ÙÙŠ Ø±ÙØ¹ Ø§Ù„ØµÙˆØ±Ø©.')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('حدث خطأ: $e')),
+          SnackBar(content: Text('Ø­Ø¯Ø« Ø®Ø·Ø£: $e')),
         );
       }
     } finally {
@@ -218,10 +219,10 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
               onPressed: widget.onBackToHome,
-              iconAlignment: IconAlignment.end, // هذه الخاصية تقوم بنقل الأيقونة إلى جهة اليمين (بعد النص)
+              iconAlignment: IconAlignment.end, // Ù‡Ø°Ù‡ Ø§Ù„Ø®Ø§ØµÙŠØ© ØªÙ‚ÙˆÙ… Ø¨Ù†Ù‚Ù„ Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© Ø¥Ù„Ù‰ Ø¬Ù‡Ø© Ø§Ù„ÙŠÙ…ÙŠÙ† (Ø¨Ø¹Ø¯ Ø§Ù„Ù†Øµ)
               icon: Icon(Icons.arrow_forward_rounded, color: textColor),
               label: Text(
-                'عودة القائمة',
+                'Ø¹ÙˆØ¯Ø© Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©',
                 style: TextStyle(
                   color: textColor,
                   fontWeight: FontWeight.bold,
@@ -241,7 +242,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
             child: CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey.shade300,
-              backgroundImage: _avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null,
+              backgroundImage: _avatarUrl.isNotEmpty ? CachedNetworkImageProvider(_avatarUrl) : null,
               child: _avatarUrl.isEmpty
                   ? Text(
                       _fullName.isNotEmpty ? _fullName[0] : '?',
@@ -290,7 +291,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
               ),
             ),
             child: const Text(
-              'رؤية جميع الطلاب',
+              'Ø±Ø¤ÙŠØ© Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø·Ù„Ø§Ø¨',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
@@ -298,7 +299,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           
           // Edit Profile Section
           Text(
-            'تعديل البروفايل الشخصي',
+            'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨Ø±ÙˆÙØ§ÙŠÙ„ Ø§Ù„Ø´Ø®ØµÙŠ',
             style: TextStyle(
               color: textColor,
               fontSize: 18,
@@ -309,7 +310,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           
           // Teacher Name Input
           Text(
-            'اسم المعلمة:',
+            'Ø§Ø³Ù… Ø§Ù„Ù…Ø¹Ù„Ù…Ø©:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -317,7 +318,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
             controller: _nameController,
             style: TextStyle(color: textColor),
             decoration: InputDecoration(
-              hintText: 'أدخل الاسم',
+              hintText: 'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø§Ø³Ù…',
               hintStyle: const TextStyle(color: Colors.grey),
               filled: true,
               fillColor: inputBg,
@@ -332,7 +333,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           
           // Job Description Input
           Text(
-            'الوصف الوظيفي:',
+            'Ø§Ù„ÙˆØµÙ Ø§Ù„ÙˆØ¸ÙŠÙÙŠ:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -341,7 +342,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
             style: TextStyle(color: textColor),
             maxLines: 4,
             decoration: InputDecoration(
-              hintText: 'اكتب وصفاً مختصراً عنك',
+              hintText: 'Ø§ÙƒØªØ¨ ÙˆØµÙØ§Ù‹ Ù…Ø®ØªØµØ±Ø§Ù‹ Ø¹Ù†Ùƒ',
               hintStyle: const TextStyle(color: Colors.grey),
               filled: true,
               fillColor: inputBg,
@@ -356,7 +357,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
           
           // Upload Image
           Text(
-            'ارفع الصورة الشخصية:',
+            'Ø§Ø±ÙØ¹ Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ø´Ø®ØµÙŠØ©:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -404,7 +405,7 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                   )
                 : const Text(
-                    'حفظ التعديلات',
+                    'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
           ),
@@ -414,3 +415,4 @@ class _TeacherProfileTabState extends State<TeacherProfileTab> {
     );
   }
 }
+

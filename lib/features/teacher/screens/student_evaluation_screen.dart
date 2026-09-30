@@ -1,3 +1,4 @@
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,7 +23,7 @@ class StudentEvaluationScreen extends StatefulWidget {
     this.photoUrl,
     required this.teacherName,
     this.teacherAvatarUrl,
-    this.teacherSubject = 'غير محدد',
+    this.teacherSubject = 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
   });
 
   @override
@@ -43,7 +44,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
   final TextEditingController _weeklyNoteController = TextEditingController();
   final TextEditingController _completedLessonsController = TextEditingController();
   bool completedWeeklyDuties = true;
-  String _weeklyAttendanceRate = 'جاري الحساب...';
+  String _weeklyAttendanceRate = 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø­Ø³Ø§Ø¨...';
 
   bool _isSaving = false;
 
@@ -69,7 +70,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
       final List reports = reportsRes as List;
       
       if (reports.isEmpty) {
-        if (mounted) setState(() => _weeklyAttendanceRate = '٠٪');
+        if (mounted) setState(() => _weeklyAttendanceRate = 'Ù Ùª');
         return;
       }
 
@@ -84,24 +85,24 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
       
       // Convert to Arabic numerals
       final arabicRate = rate.toStringAsFixed(0)
-          .replaceAll('0', '٠')
-          .replaceAll('1', '١')
-          .replaceAll('2', '٢')
-          .replaceAll('3', '٣')
-          .replaceAll('4', '٤')
-          .replaceAll('5', '٥')
-          .replaceAll('6', '٦')
-          .replaceAll('7', '٧')
-          .replaceAll('8', '٨')
-          .replaceAll('9', '٩');
+          .replaceAll('0', 'Ù ')
+          .replaceAll('1', 'Ù¡')
+          .replaceAll('2', 'Ù¢')
+          .replaceAll('3', 'Ù£')
+          .replaceAll('4', 'Ù¤')
+          .replaceAll('5', 'Ù¥')
+          .replaceAll('6', 'Ù¦')
+          .replaceAll('7', 'Ù§')
+          .replaceAll('8', 'Ù¨')
+          .replaceAll('9', 'Ù©');
 
       if (mounted) {
         setState(() {
-          _weeklyAttendanceRate = '$arabicRate٪';
+          _weeklyAttendanceRate = '$arabicRateÙª';
         });
       }
     } catch (e) {
-      if (mounted) setState(() => _weeklyAttendanceRate = 'غير متوفر');
+      if (mounted) setState(() => _weeklyAttendanceRate = 'ØºÙŠØ± Ù…ØªÙˆÙØ±');
     }
   }
 
@@ -118,8 +119,8 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
     try {
       final todayStr = DateTime.now().toIso8601String().split('T')[0];
 
-      // ── 1. Fetch teacher name and photo for supervisor_reviews ──
-      String teacherName = widget.studentName.isNotEmpty ? 'المدرس' : 'المدرس';
+      // â”€â”€ 1. Fetch teacher name and photo for supervisor_reviews â”€â”€
+      String teacherName = widget.studentName.isNotEmpty ? 'Ø§Ù„Ù…Ø¯Ø±Ø³' : 'Ø§Ù„Ù…Ø¯Ø±Ø³';
       String? teacherPhotoUrl;
       try {
         final profileRes = await _supabase
@@ -142,11 +143,11 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
         if (teacherRes != null) {
           teacherName = teacherRes['full_name']?.toString() ??
               teacherRes['name']?.toString() ??
-              'المدرس';
+              'Ø§Ù„Ù…Ø¯Ø±Ø³';
         }
       } catch (_) {}
 
-      // ── 2. Upsert daily_reports (avoid duplicates for same student+date) ──
+      // â”€â”€ 2. Upsert daily_reports (avoid duplicates for same student+date) â”€â”€
 
       try {
         final existingReport = await _supabase
@@ -170,12 +171,16 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
 
           // Send absence notification if marked absent
           if (!isPresent && existingReport['status'] != 'absent') {
-            await _supabase.from('notifications').insert({
-              'student_id': widget.studentId,
-              'teacher_id': widget.teacherId,
-              'title': 'غياب عن الحصة',
-              'body': 'تم تسجيل غيابك في حصة الأستاذ/ة $teacherName.',
-            });
+            try {
+              await _supabase.from('notifications').insert({
+                'student_id': widget.studentId,
+                'teacher_id': widget.teacherId,
+                'title': 'ØºÙŠØ§Ø¨ Ø¹Ù† Ø§Ù„Ø­ØµØ©',
+                'body': 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ ØºÙŠØ§Ø¨Ùƒ ÙÙŠ Ø­ØµØ© Ø§Ù„Ø£Ø³ØªØ§Ø°/Ø© $teacherName.',
+              });
+            } catch (e) {
+              debugPrint('Notification error: $e');
+            }
           }
         } else {
           // Insert new report
@@ -192,37 +197,49 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           });
 
           // Send attendance notification (present or absent)
-          if (!isPresent) {
-            await _supabase.from('notifications').insert({
-              'student_id': widget.studentId,
-              'teacher_id': widget.teacherId,
-              'title': 'غياب عن الحصة',
-              'body': 'تم تسجيل غيابك في حصة الأستاذ/ة $teacherName.',
-            });
-          } else {
-            // Send present notification with details
-            String notifBody = 'تم تسجيل حضورك في حصة الأستاذ/ة $teacherName ✅';
-            if (dailyStars > 0) {
-              notifBody += '\n⭐ حصلت على $dailyStars نجوم';
+          try {
+            if (!isPresent) {
+              await _supabase.from('notifications').insert({
+                'student_id': widget.studentId,
+                'teacher_id': widget.teacherId,
+                'title': 'ØºÙŠØ§Ø¨ Ø¹Ù† Ø§Ù„Ø­ØµØ©',
+                'body': 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ ØºÙŠØ§Ø¨Ùƒ ÙÙŠ Ø­ØµØ© Ø§Ù„Ø£Ø³ØªØ§Ø°/Ø© $teacherName.',
+              });
+            } else {
+              // Send present notification with details
+              String notifBody = 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ Ø­Ø¶ÙˆØ±Ùƒ ÙÙŠ Ø­ØµØ© Ø§Ù„Ø£Ø³ØªØ§Ø°/Ø© $teacherName âœ…';
+              if (dailyStars > 0) {
+                notifBody += '\nâ­ Ø­ØµÙ„Øª Ø¹Ù„Ù‰ $dailyStars Ù†Ø¬ÙˆÙ…';
+              }
+              if (_dailyNoteController.text.trim().isNotEmpty) {
+                notifBody += '\nðŸ“ Ù…Ù„Ø§Ø­Ø¸Ø©: ${_dailyNoteController.text.trim()}';
+              }
+              
+              await _supabase.from('notifications').insert({
+                'student_id': widget.studentId,
+                'teacher_id': widget.teacherId,
+                'title': 'ØªØ³Ø¬ÙŠÙ„ Ø­Ø¶ÙˆØ±',
+                'body': notifBody,
+              });
             }
-            if (_dailyNoteController.text.trim().isNotEmpty) {
-              notifBody += '\n📝 ملاحظة: ${_dailyNoteController.text.trim()}';
-            }
-            
-            await _supabase.from('notifications').insert({
-              'student_id': widget.studentId,
-              'teacher_id': widget.teacherId,
-              'title': 'تسجيل حضور',
-              'body': notifBody,
-            });
+          } catch (e) {
+            debugPrint('Notification error: $e');
           }
         }
       } catch (e) {
         debugPrint('Error saving daily report: $e');
-        rethrow;
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('âš ï¸ Ø­Ø¯Ø« Ø®Ø·Ø£ ÙÙŠ Ø­ÙØ¸ Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„ÙŠÙˆÙ…ÙŠ: $e'),
+              backgroundColor: Colors.orange,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
       }
 
-      // ── 3. Save teacher attendance (if not already logged today) ──
+      // â”€â”€ 3. Save teacher attendance (if not already logged today) â”€â”€
       try {
         final teacherAttRes = await _supabase
             .from('teacher_attendance')
@@ -239,7 +256,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
         }
       } catch (_) {}
 
-      // ── 4. Save student_reviews (teacher note → appears in student notes tab) ──
+      // â”€â”€ 4. Save student_reviews (teacher note â†’ appears in student notes tab) â”€â”€
       final String noteText = _dailyNoteController.text.trim();
       if (noteText.isNotEmpty) {
         try {
@@ -255,12 +272,12 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               'teacher_name': teacherName,
               'notes': noteText,
               'behavior_rating': dailyStars >= 4
-                  ? 'مميز'
+                  ? 'Ù…Ù…ÙŠØ²'
                   : dailyStars >= 3
-                      ? 'جيد جداً'
+                      ? 'Ø¬ÙŠØ¯ Ø¬Ø¯Ø§Ù‹'
                       : dailyStars >= 2
-                          ? 'جيد'
-                          : 'يحتاج متابعة',
+                          ? 'Ø¬ÙŠØ¯'
+                          : 'ÙŠØ­ØªØ§Ø¬ Ù…ØªØ§Ø¨Ø¹Ø©',
               if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
                 'teacher_photo_url': teacherPhotoUrl,
             }).eq('id', existingReview['id']);
@@ -271,12 +288,12 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               'teacher_name': teacherName,
               'notes': noteText,
               'behavior_rating': dailyStars >= 4
-                  ? 'مميز'
+                  ? 'Ù…Ù…ÙŠØ²'
                   : dailyStars >= 3
-                      ? 'جيد جداً'
+                      ? 'Ø¬ÙŠØ¯ Ø¬Ø¯Ø§Ù‹'
                       : dailyStars >= 2
-                          ? 'جيد'
-                          : 'يحتاج متابعة',
+                          ? 'Ø¬ÙŠØ¯'
+                          : 'ÙŠØ­ØªØ§Ø¬ Ù…ØªØ§Ø¨Ø¹Ø©',
               if (teacherPhotoUrl != null && teacherPhotoUrl.isNotEmpty)
                 'teacher_photo_url': teacherPhotoUrl,
             });
@@ -287,28 +304,44 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
         }
       }
 
-      // ── 5. Save weekly evaluation ──
-      try {
-        await _supabase.from('weekly_evaluations').insert({
-          'student_id': widget.studentId,
-          'teacher_id': widget.teacherId,
-          'completed_duties': completedWeeklyDuties,
-          'completed_lessons': _completedLessonsController.text.trim(),
-          'note': _weeklyNoteController.text.trim(),
-        });
-      } catch (_) {
-        // Table might not exist, ignore
+      // â”€â”€ 5. Save weekly evaluation â”€â”€
+      final weeklyNote = _weeklyNoteController.text.trim();
+      final completedLessons = _completedLessonsController.text.trim();
+      
+      if (weeklyNote.isNotEmpty || completedLessons.isNotEmpty || completedWeeklyDuties) {
+        try {
+          await _supabase.from('weekly_evaluations').insert({
+            'student_id': widget.studentId,
+            'teacher_id': widget.teacherId,
+            'completed_duties': completedWeeklyDuties,
+            'completed_lessons': completedLessons,
+            'note': weeklyNote,
+          });
+          
+          try {
+            await _supabase.from('notifications').insert({
+              'student_id': widget.studentId,
+              'teacher_id': widget.teacherId,
+              'title': 'ØªÙ‚ÙŠÙŠÙ… Ø£Ø³Ø¨ÙˆØ¹ÙŠ Ø¬Ø¯ÙŠØ¯',
+              'body': 'ØªÙ… Ø¥Ø¶Ø§ÙØ© ØªÙ‚ÙŠÙŠÙ… Ø£Ø³Ø¨ÙˆØ¹ÙŠ Ù„Ùƒ Ù…Ù† Ø§Ù„Ø£Ø³ØªØ§Ø°/Ø© $teacherName',
+            });
+          } catch (e) {
+            debugPrint('Weekly notification error: $e');
+          }
+        } catch (_) {
+          // Table might not exist, ignore
+        }
       }
 
-      // ── 6. Send Notification to Student ──
+      // â”€â”€ 6. Send Notification to Student â”€â”€
       // The notification is already sent above based on attendance status
 
       if (!mounted) return;
       
-      // رسالة نجاح واضحة بناءً على حالة الحضور
+      // Ø±Ø³Ø§Ù„Ø© Ù†Ø¬Ø§Ø­ ÙˆØ§Ø¶Ø­Ø© Ø¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø­Ø§Ù„Ø© Ø§Ù„Ø­Ø¶ÙˆØ±
       final String successMessage = isPresent 
-          ? '✅ تم تسجيل حضور ${widget.studentName} بنجاح'
-          : '✅ تم تسجيل غياب ${widget.studentName}';
+          ? 'âœ… ØªÙ… ØªØ³Ø¬ÙŠÙ„ Ø­Ø¶ÙˆØ± ${widget.studentName} Ø¨Ù†Ø¬Ø§Ø­'
+          : 'âœ… ØªÙ… ØªØ³Ø¬ÙŠÙ„ ØºÙŠØ§Ø¨ ${widget.studentName}';
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -322,10 +355,10 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
       debugPrint('Error saving evaluation: $e');
       if (!mounted) return;
       
-      // رسالة خطأ مبسطة للمستخدم
+      // Ø±Ø³Ø§Ù„Ø© Ø®Ø·Ø£ Ù…Ø¨Ø³Ø·Ø© Ù„Ù„Ù…Ø³ØªØ®Ø¯Ù…
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('⚠️ حدث خطأ، حاول مرة أخرى'),
+          content: Text('âš ï¸ Ø­Ø¯Ø« Ø®Ø·Ø£ØŒ Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰'),
           backgroundColor: Colors.orange,
           duration: Duration(seconds: 2),
         ),
@@ -355,7 +388,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(Icons.arrow_back, color: textColor),
           label: Text(
-            'عودة للقائمة',
+            'Ø¹ÙˆØ¯Ø© Ù„Ù„Ù‚Ø§Ø¦Ù…Ø©',
             style: TextStyle(
               color: textColor,
               fontSize: 16,
@@ -374,7 +407,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               radius: 40,
               backgroundColor: isDark ? Colors.grey[800] : const Color(0xFFEEEEEE),
               backgroundImage: widget.photoUrl != null && widget.photoUrl!.isNotEmpty
-                  ? NetworkImage(widget.photoUrl!)
+                  ? CachedNetworkImageProvider(widget.photoUrl!)
                   : null,
               child: widget.photoUrl == null || widget.photoUrl!.isEmpty
                   ? Text(
@@ -397,7 +430,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               ),
             ),
             Text(
-              'الفئة العمرية: ${widget.category}',
+              'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ©: ${widget.category}',
               style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
@@ -422,14 +455,14 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                         : const Color(0xFFDDD0F7),
                     backgroundImage: widget.teacherAvatarUrl != null &&
                             widget.teacherAvatarUrl!.isNotEmpty
-                        ? NetworkImage(widget.teacherAvatarUrl!)
+                        ? CachedNetworkImageProvider(widget.teacherAvatarUrl!)
                         : null,
                     child: widget.teacherAvatarUrl == null ||
                             widget.teacherAvatarUrl!.isEmpty
                         ? Text(
                             widget.teacherName.isNotEmpty
                                 ? widget.teacherName[0]
-                                : 'م',
+                                : 'Ù…',
                             style: TextStyle(
                               color: textColor,
                               fontSize: 14,
@@ -497,7 +530,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                 child: _isSaving
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
-                        'حفظ التعديلات',
+                        'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -531,7 +564,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            'التقييم اليومي',
+            'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø§Ù„ÙŠÙˆÙ…ÙŠ',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF724F96),
@@ -542,7 +575,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           const Divider(),
           const SizedBox(height: 12),
           Text(
-            'تسجيل الحضور:',
+            'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø­Ø¶ÙˆØ±:',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -573,7 +606,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                           const Icon(Icons.close, color: Colors.white, size: 20),
                         if (!isPresent) const SizedBox(width: 8),
                         Text(
-                          'غائب',
+                          'ØºØ§Ø¦Ø¨',
                           style: TextStyle(
                             color: !isPresent ? Colors.white : textColor,
                             fontSize: 16,
@@ -606,7 +639,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                           const Icon(Icons.check, color: Colors.white, size: 20),
                         if (isPresent) const SizedBox(width: 8),
                         Text(
-                          'حاضر',
+                          'Ø­Ø§Ø¶Ø±',
                           style: TextStyle(
                             color: isPresent ? Colors.white : textColor,
                             fontSize: 16,
@@ -632,7 +665,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                   textDirection: TextDirection.rtl,
                   maxLines: 2,
                   decoration: InputDecoration(
-                    hintText: 'ملاحظة',
+                    hintText: 'Ù…Ù„Ø§Ø­Ø¸Ø©',
                     hintStyle: const TextStyle(fontSize: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -649,7 +682,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                 children: [
                   Row(
                     children: [
-                      const Text('تناول الوجبة', style: TextStyle(fontSize: 12)),
+                      const Text('ØªÙ†Ø§ÙˆÙ„ Ø§Ù„ÙˆØ¬Ø¨Ø©', style: TextStyle(fontSize: 12)),
                       Checkbox(
                         value: ateMeal,
                         onChanged: (val) => setState(() => ateMeal = val ?? false),
@@ -658,7 +691,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
                   ),
                   Row(
                     children: [
-                      const Text('أخذ الاستراحة', style: TextStyle(fontSize: 12)),
+                      const Text('Ø£Ø®Ø° Ø§Ù„Ø§Ø³ØªØ±Ø§Ø­Ø©', style: TextStyle(fontSize: 12)),
                       Checkbox(
                         value: tookBreak,
                         onChanged: (val) => setState(() => tookBreak = val ?? false),
@@ -671,7 +704,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           ),
           const SizedBox(height: 20),
           Text(
-            'التقييم اليومي:',
+            'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø§Ù„ÙŠÙˆÙ…ÙŠ:',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -720,7 +753,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            'التقييم الأسبوعي',
+            'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠ',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF724F96),
@@ -731,7 +764,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           const Divider(),
           const SizedBox(height: 12),
           Text(
-            'نسبة الحضور الأسبوعية: $_weeklyAttendanceRate',
+            'Ù†Ø³Ø¨Ø© Ø§Ù„Ø­Ø¶ÙˆØ± Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©: $_weeklyAttendanceRate',
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
             style: TextStyle(
@@ -742,7 +775,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'الدروس المنجزة',
+            'Ø§Ù„Ø¯Ø±ÙˆØ³ Ø§Ù„Ù…Ù†Ø¬Ø²Ø©',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -756,7 +789,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             textDirection: TextDirection.rtl,
             maxLines: 2,
             decoration: InputDecoration(
-              hintText: 'مثال: الحروف، الأرقام، ألعاب الذاكرة',
+              hintText: 'Ù…Ø«Ø§Ù„: Ø§Ù„Ø­Ø±ÙˆÙØŒ Ø§Ù„Ø£Ø±Ù‚Ø§Ù…ØŒ Ø£Ù„Ø¹Ø§Ø¨ Ø§Ù„Ø°Ø§ÙƒØ±Ø©',
               hintStyle: const TextStyle(fontSize: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -770,7 +803,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('أكمل الواجبات الأسبوعية', style: TextStyle(fontSize: 12, color: textColor)),
+              Text('Ø£ÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©', style: TextStyle(fontSize: 12, color: textColor)),
               Checkbox(
                 value: completedWeeklyDuties,
                 onChanged: (val) => setState(() => completedWeeklyDuties = val ?? false),
@@ -779,7 +812,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            'ملاحظات الأسبوع',
+            'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -793,7 +826,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             textDirection: TextDirection.rtl,
             maxLines: 3,
             decoration: InputDecoration(
-              hintText: 'متفوق جدا هذا الأسبوع...',
+              hintText: 'Ù…ØªÙÙˆÙ‚ Ø¬Ø¯Ø§ Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹...',
               hintStyle: const TextStyle(fontSize: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -810,4 +843,5 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
 
 
 }
+
 
