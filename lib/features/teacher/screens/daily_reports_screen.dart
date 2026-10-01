@@ -77,28 +77,28 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
 
   String _formatDate(DateTime date) {
     const days = [
-      'Ø§Ù„Ø§Ø«Ù†ÙŠÙ†',
-      'Ø§Ù„Ø«Ù„Ø§Ø«Ø§Ø¡',
-      'Ø§Ù„Ø£Ø±Ø¨Ø¹Ø§Ø¡',
-      'Ø§Ù„Ø®Ù…ÙŠØ³',
-      'Ø§Ù„Ø¬Ù…Ø¹Ø©',
-      'Ø§Ù„Ø³Ø¨Øª',
-      'Ø§Ù„Ø£Ø­Ø¯',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت',
+      'الأحد',
     ];
     const months = [
       '',
-      'ÙŠÙ†Ø§ÙŠØ±',
-      'ÙØ¨Ø±Ø§ÙŠØ±',
-      'Ù…Ø§Ø±Ø³',
-      'Ø£Ø¨Ø±ÙŠÙ„',
-      'Ù…Ø§ÙŠÙˆ',
-      'ÙŠÙˆÙ†ÙŠÙˆ',
-      'ÙŠÙˆÙ„ÙŠÙˆ',
-      'Ø£ØºØ³Ø·Ø³',
-      'Ø³Ø¨ØªÙ…Ø¨Ø±',
-      'Ø£ÙƒØªÙˆØ¨Ø±',
-      'Ù†ÙˆÙÙ…Ø¨Ø±',
-      'Ø¯ÙŠØ³Ù…Ø¨Ø±',
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
     ];
     final dayName = days[date.weekday - 1];
     return '$dayName ${date.day} ${months[date.month]} ${date.year}';
@@ -127,7 +127,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„ÙŠÙˆÙ…ÙŠØ©',
+          'سجل التقييمات اليومية',
           style: TextStyle(
             color: textColor,
             fontSize: 20,
@@ -170,7 +170,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                           ),
                           SizedBox(width: 6),
                           Text(
-                            'ØªØºÙŠÙŠØ± Ø§Ù„ÙŠÙˆÙ…',
+                            'تغيير اليوم',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -185,7 +185,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        isToday ? 'Ø§Ù„ÙŠÙˆÙ…' : 'ØªØ§Ø±ÙŠØ® Ù…Ø­Ø¯Ø¯',
+                        isToday ? 'اليوم' : 'تاريخ محدد',
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 12,
@@ -223,7 +223,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${_reports.length} ØªÙ‚ÙŠÙŠÙ…',
+                    '${_reports.length} تقييم',
                     style: const TextStyle(
                       color: Color(0xFF724F96),
                       fontWeight: FontWeight.bold,
@@ -232,7 +232,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                   ),
                 ),
                 Text(
-                  'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø·Ù„Ø§Ø¨',
+                  'قائمة الطلاب',
                   style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
           Icon(Icons.inbox_rounded, size: 80, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„ÙŠÙˆÙ…',
+            'لا توجد تقييمات في هذا اليوم',
             style: TextStyle(
               color: textColor,
               fontSize: 16,
@@ -287,7 +287,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ø§Ø®ØªØ± ÙŠÙˆÙ…Ø§Ù‹ Ø¢Ø®Ø± Ø£Ùˆ Ù‚Ù… Ø¨Ø¥Ø¶Ø§ÙØ© ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
+            'اختر يوماً آخر أو قم بإضافة تقييمات',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -301,7 +301,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
     required Color textColor,
   }) {
     final student = report['students'] as Map<String, dynamic>?;
-    final studentName = student?['full_name'] ?? 'Ø·Ø§Ù„Ø¨ ØºÙŠØ± Ù…Ø¹Ø±ÙˆÙ';
+    final studentName = student?['full_name'] ?? 'طالب غير معروف';
     final ageGroup = student?['age_group'] ?? '';
     final initial = studentName.isNotEmpty ? studentName[0] : '?';
     final photoUrl = student?['photo_url'] as String?;
@@ -362,7 +362,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      isPresent ? 'Ø­Ø§Ø¶Ø±' : 'ØºØ§Ø¦Ø¨',
+                      isPresent ? 'حاضر' : 'غائب',
                       style: TextStyle(
                         color: isPresent
                             ? Colors.green.shade700
@@ -444,7 +444,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                   ),
                   const SizedBox(width: 4),
                   const Text(
-                    'Ø§Ù„Ù†Ø¬ÙˆÙ…',
+                    'النجوم',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],
@@ -463,7 +463,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                   ),
                   const SizedBox(width: 4),
                   const Text(
-                    'Ø§Ø³ØªØ±Ø§Ø­Ø©',
+                    'استراحة',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],
@@ -482,7 +482,7 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
                   ),
                   const SizedBox(width: 4),
                   const Text(
-                    'ÙˆØ¬Ø¨Ø©',
+                    'وجبة',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],
@@ -523,4 +523,3 @@ class _DailyReportsScreenState extends State<DailyReportsScreen> {
     );
   }
 }
-

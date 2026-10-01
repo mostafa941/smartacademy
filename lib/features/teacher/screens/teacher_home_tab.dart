@@ -27,8 +27,8 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
   String _searchQuery = '';
   RealtimeChannel? _studentsChannel;
 
-  // Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³
-  String _teacherSubject = 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
+  // بيانات المدرس
+  String _teacherSubject = 'غير محدد';
   String? _teacherAvatarUrl;
 
   @override
@@ -47,7 +47,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           schema: 'public',
           table: 'students',
           callback: (payload) {
-            debugPrint('ðŸ”„ Student table changed. Refreshing list...');
+            debugPrint('🔄 Student table changed. Refreshing list...');
             _fetchStudents();
           },
         )
@@ -62,14 +62,14 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
 
   Future<void> _fetchTeacherInfo() async {
     try {
-      // Ø¬Ù„Ø¨ avatar_url Ù…Ù† profiles
+      // جلب avatar_url من profiles
       final profileRes = await _supabase
           .from('profiles')
           .select('avatar_url')
           .eq('id', widget.userId)
           .maybeSingle();
 
-      // Ø¬Ù„Ø¨ Ø§Ù„Ù…Ø§Ø¯Ø© Ù…Ù† teacher_subjects
+      // جلب المادة من teacher_subjects
       final subjectRes = await _supabase
           .from('teacher_subjects')
           .select('subjects(name)')
@@ -86,7 +86,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           _teacherAvatarUrl = profileRes?['avatar_url'] as String?;
           _teacherSubject = subjectNames.isNotEmpty
               ? subjectNames.join(', ')
-              : 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
+              : 'غير محدد';
         });
       }
     } catch (e) {
@@ -219,7 +219,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                     style: TextStyle(color: textColor),
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: 'Ø¨Ø­Ø« Ø¹Ù† Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨...',
+                      hintText: 'بحث عن اسم الطالب...',
                       hintStyle: TextStyle(
                         color: hintColor,
                         fontSize: 14,
@@ -236,8 +236,8 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
           const SizedBox(height: 20),
           Text(
             widget.filterCategory == null
-                ? 'Ø§Ù„Ø·Ù„Ø§Ø¨ - Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© (Ø¬Ù…ÙŠØ¹ Ø§Ù„ÙØ¦Ø§Øª)'
-                : 'Ø§Ù„Ø·Ù„Ø§Ø¨ - Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© (${widget.filterCategory})',
+                ? 'الطلاب - الفئة العمرية (جميع الفئات)'
+                : 'الطلاب - الفئة العمرية (${widget.filterCategory})',
             textAlign: TextAlign.right,
             style: TextStyle(
               color: textColor,
@@ -252,7 +252,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                 : _filteredStudents.isEmpty
                     ? Center(
                         child: Text(
-                          'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø·Ù„Ø§Ø¨ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©',
+                          'لا يوجد طلاب في هذه الفئة',
                           style: TextStyle(
                             color: textColor,
                             fontWeight: FontWeight.bold,
@@ -265,7 +265,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                             const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final student = _filteredStudents[index];
-                          final name = student['full_name'] ?? 'Ø¨Ø¯ÙˆÙ† Ø§Ø³Ù…';
+                          final name = student['full_name'] ?? 'بدون اسم';
                           final category = student['age_group'] ?? '';
                           final initial =
                               name.isNotEmpty ? name[0] : '?';
@@ -374,7 +374,7 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
                     ),
                   ),
                   Text(
-                    'Ø§Ù„ÙØ¦Ø©: $category',
+                    'الفئة: $category',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 11,
@@ -407,4 +407,3 @@ class _TeacherHomeTabState extends State<TeacherHomeTab> {
     );
   }
 }
-

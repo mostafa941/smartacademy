@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../auth/services/session_service.dart';
 import '../../splash/screens/splash_screen.dart';

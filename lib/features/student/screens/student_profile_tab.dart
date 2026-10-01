@@ -183,7 +183,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Student Info Section
           Text(
-            'Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø·Ø§Ù„Ø¨',
+            'بيانات الطالب',
             style: TextStyle(
               color: textColor,
               fontSize: 18,
@@ -194,7 +194,7 @@ class _StudentProfileTabState extends State<StudentProfileTab> {
 
           // Student Name
           Text(
-            'Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨:',
+            'اسم الطالب:',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           const SizedBox(height: 8),

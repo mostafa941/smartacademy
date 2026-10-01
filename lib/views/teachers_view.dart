@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/widgets/add_teacher_modal.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
+import 'package:smart_academy/features/admin/constants/app_strings.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
 import 'package:smart_academy/views/teacher_detail_view.dart';
 
@@ -34,7 +35,7 @@ class TeachersView extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.add, color: Colors.white, size: 18),
                 label: const Text(
-                  'إضافة مدرس جديد',
+                  AppStrings.addNewTeacher,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -55,7 +56,7 @@ class TeachersView extends StatelessWidget {
                   child: TextField(
                     onChanged: (val) => provider.setTeacherSearchQuery(val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث بأسم المدرس او المادة...',
+                      hintText: AppStrings.searchTeachers,
                       hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
                       fillColor: Colors.white,
                       filled: true,
@@ -137,7 +138,7 @@ class TeachersView extends StatelessWidget {
                     if (provider.filteredTeachers.isEmpty)
                       const Padding(
                         padding: EdgeInsets.all(32.0),
-                        child: Center(child: Text('لا توجد نتائج مطابقة')),
+                        child: Center(child: Text(AppStrings.noMatchingResults)),
                       )
                     else
                       ...provider.filteredTeachers.map((teacher) {

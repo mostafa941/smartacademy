@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SkeletonListLoading extends StatelessWidget {

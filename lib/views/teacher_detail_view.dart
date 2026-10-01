@@ -15,7 +15,7 @@ class TeacherDetailView extends StatefulWidget {
 }
 
 class _TeacherDetailViewState extends State<TeacherDetailView> {
-  // ØªØªØ¨Ø¹ Ø§Ù„Ù…Ø±Ø­Ù„Ø©/Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø© Ø­Ø§Ù„ÙŠØ§Ù‹
+  // تتبع المرحلة/الفئة العمرية المحددة حالياً
   String? _selectedStage;
 
   @override
@@ -24,10 +24,10 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     if (teacher == null) return const SizedBox.shrink();
 
     final String teacherName = teacher['full_name'] ?? '';
-    final String subjectName = teacher['subject'] ?? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
-    final String ageGroup = teacher['age_group'] ?? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
+    final String subjectName = teacher['subject'] ?? 'غير محدد';
+    final String ageGroup = teacher['age_group'] ?? 'غير محدد';
 
-    // Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ø®Ø§ØµØ© Ø¨Ø§Ù„Ù…Ø¯Ø±Ø³
+    // قائمة المراحل الخاصة بالمدرس
     final List<String> stagesList = widget.provider.teacherStagesList.isNotEmpty
         ? widget.provider.teacherStagesList
         : ageGroup.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
@@ -39,7 +39,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¹Ù„ÙˆÙŠ (Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³ ÙˆØ£Ø²Ø±Ø§Ø± Ø§Ù„ØªØ­ÙƒÙ…)
+            // 1. الشريط العلوي (بيانات المدرس وأزرار التحكم)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,7 +69,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Ù…Ù„Ù Ø§Ù„Ù…Ø¯Ø±Ø³ : $teacherName',
+                          'ملف المدرس : $teacherName',
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                         Row(
                           children: [
                             Text(
-                              'Ø§Ù„Ù…Ø§Ø¯Ø©: $subjectName',
+                              'المادة: $subjectName',
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
@@ -95,7 +95,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
-                                'Ø§Ù„Ù…Ø±Ø­Ù„Ø©: $ageGroup',
+                                'المرحلة: $ageGroup',
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.sidebarBg,
@@ -110,7 +110,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                   ],
                 ),
 
-                // Ø£Ø²Ø±Ø§Ø± Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ ÙˆØ§Ù„Ø­Ø°Ù
+                // أزرار التعديل والحذف
                 Row(
                   children: [
                     ElevatedButton.icon(
@@ -123,7 +123,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       ),
                       icon: const Icon(Icons.edit, color: Colors.white, size: 16),
                       label: const Text(
-                        'ØªØ¹Ø¯ÙŠÙ„',
+                        'تعديل',
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () {
@@ -143,7 +143,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       ),
                       icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
                       label: const Text(
-                        'Ø­Ø°Ù',
+                        'حذف',
                         style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () {
@@ -156,7 +156,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
             ),
             const SizedBox(height: 24),
 
-            // 2. ÙƒØ±ÙˆØª Ø§Ù„Ø¥Ø­ØµØ§Ø¦ÙŠØ§Øª (Ø£ÙŠØ§Ù… Ø§Ù„Ø­Ø¶ÙˆØ± - Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨)
+            // 2. كروت الإحصائيات (أيام الحضور - عدد الطلاب)
             Row(
               children: [
                 Expanded(
@@ -172,7 +172,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       );
                     },
                     child: _buildStatCard(
-                      title: 'Ø£ÙŠØ§Ù… Ø§Ù„Ø­Ø¶ÙˆØ±',
+                      title: 'أيام الحضور',
                       value: widget.provider.teacherAttendanceCount.toString(),
                       isClickable: true,
                     ),
@@ -181,7 +181,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildStatCard(
-                    title: 'Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨',
+                    title: 'عدد الطلاب',
                     value: widget.provider.teacherStudentsCount.toString(),
                   ),
                 ),
@@ -189,7 +189,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
             ),
             const SizedBox(height: 32),
 
-            // 3. Ø¹Ø±Ø¶ Ù‚Ø§Ø¦Ù…Ø© Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ÙØ¦Ø§Øª Ø£Ùˆ Ø¹Ø±Ø¶ Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ø·Ù„Ø§Ø¨ Ø¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø§Ø®ØªÙŠØ§Ø±
+            // 3. عرض قائمة اختيار الفئات أو عرض جدول الطلاب بناءً على الاختيار
             _selectedStage == null
                 ? _buildStageSelectionSection(stagesList)
                 : _buildStageStudentsSection(_selectedStage!),
@@ -199,7 +199,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // ÙƒØ±Øª Ø§Ù„Ø¥Ø­ØµØ§Ø¦ÙŠØ§Øª
+  // كرت الإحصائيات
   Widget _buildStatCard({required String title, required String value, bool isClickable = false}) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -246,7 +246,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // ÙˆØ§Ø¬Ù‡Ø© Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ù…Ø±Ø§Ø­Ù„/Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„Ø¹Ù…Ø±ÙŠØ©
+  // واجهة اختيار المراحل/الفئات العمرية
   Widget _buildStageSelectionSection(List<String> stages) {
     return Container(
       width: double.infinity,
@@ -260,9 +260,9 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
         children: [
           const Row(
             children: [
-              Text('ðŸ« ', style: TextStyle(fontSize: 16)),
+              Text('🎒 ', style: TextStyle(fontSize: 16)),
               Text(
-                'Ø§Ø®ØªØ± Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© ÙˆØ§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨ ÙˆØ§Ù„Ø·Ù„Ø§Ø¨',
+                'اختر المرحلة العمرية والدراسية لمتابعة الحضور والغياب والطلاب',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -282,7 +282,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ© Ø§Ù„Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„Ø¶ØºØ·
+  // بطاقة المرحلة العمرية القابلة للضغط
   Widget _buildStageCard(String stageName) {
     return InkWell(
       onTap: () {
@@ -302,10 +302,10 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('ðŸŽ’', style: TextStyle(fontSize: 28)),
+            const Text('🎒', style: TextStyle(fontSize: 28)),
             const SizedBox(height: 8),
             Text(
-              'Ø§Ù„Ù…Ø±Ø­Ù„Ø© $stageName',
+              'المرحلة $stageName',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -318,9 +318,9 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // Ø¬Ø¯ÙˆÙ„ Ø·Ù„Ø§Ø¨ Ø§Ù„ÙØ¦Ø© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø©
+  // جدول طلاب الفئة المختارة
   Widget _buildStageStudentsSection(String stageName) {
-    // ØªØµÙÙŠØ© Ø§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„ØªØ§Ø¨Ø¹ÙŠÙ† Ù„Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø©
+    // تصفية الطلاب التابعين للمرحلة المختارة
     final filteredStudents = widget.provider.studentsList.where((s) {
       final String studentAgeGroup = s['age_group'] ?? '';
       return studentAgeGroup.trim() == stageName.trim();
@@ -336,12 +336,12 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¹Ù„ÙˆÙŠ Ù„Ù„Ø¬Ø¯ÙˆÙ„
+          // الشريط العلوي للجدول
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'ðŸ‘¨â€ðŸŽ“ Ø·Ù„Ø§Ø¨ Ø§Ù„ØµÙ $stageName',
+                '👨‍🎓 طلاب الصف $stageName',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -360,7 +360,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                     ),
                     icon: const Icon(Icons.add, color: Colors.white, size: 18),
                     label: const Text(
-                      'Ø§Ø¶Ø§ÙØ© Ø·Ø§Ù„Ø¨ Ø¬Ø¯ÙŠØ¯',
+                      'اضافة طالب جديد',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
@@ -385,7 +385,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Ø¹ÙˆØ¯Ø©',
+                          'عودة',
                           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 4),
@@ -399,7 +399,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
           ),
           const SizedBox(height: 20),
 
-          // Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª
+          // جدول البيانات
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -416,7 +416,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
               borderRadius: BorderRadius.circular(12),
               child: Column(
                 children: [
-                  // Ø§Ù„Ø¹Ù†Ø§ÙˆÙŠÙ†
+                  // العناوين
                   Container(
                     color: const Color(0xFF2A1B38),
                     padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -425,35 +425,35 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            'Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨',
+                            'اسم الطالب',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
-                            'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø¹Ù…Ø±ÙŠØ©',
+                            'الفئة العمرية',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
-                            'Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø£Ù…Ø± Ø§Ù„Ø·Ø§Ù„Ø¨',
+                            'رقم ولي الأمر الطالب',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
-                            'Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨',
+                            'الحضور والغياب',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Text(
-                            'Ø§Ù„Ø§Ø¬Ø±Ø§Ø¡Ø§Øª',
+                            'الاجراءات',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -461,12 +461,12 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                     ),
                   ),
 
-                  // Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„ØµÙÙˆÙ
+                  // قائمة الصفوف
                   if (filteredStudents.isEmpty)
                     const Padding(
                       padding: EdgeInsets.all(24.0),
                       child: Text(
-                        'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø·Ù„Ø§Ø¨ Ù…Ø¶Ø§ÙÙŠÙ† Ù„Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø­Ø§Ù„ÙŠØ§Ù‹',
+                        'لا يوجد طلاب مضافين لهذه المرحلة حالياً',
                         style: TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     )
@@ -558,7 +558,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                                       widget.provider.selectStudent(student);
                                     },
                                     child: const Text(
-                                      'ÙØªØ­ Ø§Ù„Ù…Ù„Ù',
+                                      'فتح الملف',
                                       style: TextStyle(
                                         color: AppColors.sidebarBg,
                                         fontSize: 12,
@@ -582,7 +582,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // Ù†Ø§ÙØ°Ø© ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ø¯Ø±Ø³
+  // نافذة تعديل المدرس
   void _showEditTeacherDialog(BuildContext context, Map<String, dynamic> teacher) {
     final nameController = TextEditingController(text: teacher['full_name'] ?? '');
     final phoneController = TextEditingController(text: teacher['phone'] ?? '');
@@ -598,7 +598,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: AlertDialog(
-          title: const Text('ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³'),
+          title: const Text('تعديل بيانات المدرس'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -606,7 +606,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„ÙƒØ§Ù…Ù„',
+                    labelText: 'الاسم بالكامل',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -614,7 +614,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 TextField(
                   controller: phoneController,
                   decoration: const InputDecoration(
-                    labelText: 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ',
+                    labelText: 'رقم الهاتف',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -622,7 +622,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 TextField(
                   controller: subjectController,
                   decoration: const InputDecoration(
-                    labelText: 'Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©',
+                    labelText: 'المادة الدراسية',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -630,8 +630,8 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 TextField(
                   controller: ageGroupsController,
                   decoration: const InputDecoration(
-                    labelText: 'Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ© (Ù…ÙØµÙˆÙ„Ø© Ø¨ÙÙˆØ§ØµÙ„)',
-                    hintText: 'Ù…Ø«Ø§Ù„: KG1, KG2',
+                    labelText: 'المراحل التعليمية (مفصولة بفواصل)',
+                    hintText: 'مثال: KG1, KG2',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -641,7 +641,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Ø¥Ù„ØºØ§Ø¡'),
+              child: const Text('إلغاء'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -666,16 +666,16 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                   Navigator.pop(ctx);
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('ØªÙ… ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³ Ø¨Ù†Ø¬Ø§Ø­')),
+                      const SnackBar(content: Text('تم تعديل بيانات المدرس بنجاح')),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„')),
+                      const SnackBar(content: Text('حدث خطأ أثناء التعديل')),
                     );
                   }
                 }
               },
-              child: const Text('Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª', style: TextStyle(color: Colors.white)),
+              child: const Text('حفظ التعديلات', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -683,19 +683,19 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
     );
   }
 
-  // Ù†Ø§ÙØ°Ø© Ø­Ø°Ù Ø§Ù„Ù…Ø¯Ø±Ø³
+  // نافذة حذف المدرس
   void _showDeleteConfirmDialog(BuildContext context, dynamic teacherId) {
     showDialog(
       context: context,
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: AlertDialog(
-          title: const Text('ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø­Ø°Ù'),
-          content: const Text('Ù‡Ù„ Ø£Ù†Øª ØªØ£ÙƒØ¯ Ù…Ù† Ø±ØºØ¨ØªÙƒ ÙÙŠ Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ù…Ø¯Ø±Ø³ Ù†Ù‡Ø§Ø¦ÙŠØ§Ù‹ØŸ'),
+          title: const Text('تأكيد الحذف'),
+          content: const Text('هل أنت تأكد من رغبتك في حذف هذا المدرس نهائياً؟'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Ø¥Ù„ØºØ§Ø¡'),
+              child: const Text('إلغاء'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -703,7 +703,7 @@ class _TeacherDetailViewState extends State<TeacherDetailView> {
                 Navigator.pop(ctx);
                 await widget.provider.deleteTeacher(teacherId.toString());
               },
-              child: const Text('Ø­Ø°Ù', style: TextStyle(color: Colors.white)),
+              child: const Text('حذف', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

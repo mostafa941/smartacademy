@@ -24,10 +24,10 @@ class StudentDetailView extends StatelessWidget {
         'english',
         'math',
         'Ucmath',
-        'Ø¹Ø±Ø¨ÙŠ',
-        'Ø­Ø³Ø§Ø¨',
-        'Ù‚Ø±Ø§Ù†',
-        'Ø³Ù„ÙˆÙƒÙŠØ§Øª Ùˆ Ø§Ø¯Ø§Ø¨',
+        'عربي',
+        'حساب',
+        'قران',
+        'سلوكيات و اداب',
       ],
     );
 
@@ -36,11 +36,11 @@ class StudentDetailView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¹Ù„ÙˆÙŠ
+          // الشريط العلوي
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Ø£Ø²Ø±Ø§Ø± Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ ÙˆØ§Ù„Ø­Ø°Ù Ø¹Ù„Ù‰ Ø§Ù„ÙŠÙ…ÙŠÙ†
+              // أزرار التعديل والحذف على اليمين
               Row(
                 children: [
                   ElevatedButton.icon(
@@ -49,7 +49,7 @@ class StudentDetailView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     icon: const Icon(Icons.edit, size: 18, color: Colors.white),
-                    label: const Text('ØªØ¹Ø¯ÙŠÙ„', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    label: const Text('تعديل', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -65,24 +65,24 @@ class StudentDetailView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     icon: const Icon(Icons.delete_outline, size: 18),
-                    label: const Text('Ø­Ø°Ù', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: const Text('حذف', style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () => _showDeleteDialog(context, student['id']),
                   ),
                 ],
               ),
 
-              // Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨ ÙˆØ§Ù„Ù…Ø±Ø­Ù„Ø© ÙˆØ³Ù‡Ù… Ø§Ù„Ø±Ø¬ÙˆØ¹ Ø¹Ù„Ù‰ Ø§Ù„Ø´Ù…Ø§Ù„
+              // اسم الطالب والمرحلة وسهم الرجوع على الشمال
               Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'Ù…Ù„Ù Ø§Ù„Ø·Ø§Ù„Ø¨ : ${student['full_name'] ?? ''}',
+                        'ملف الطالب : ${student['full_name'] ?? ''}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'Ø§Ù„Ù…Ø±Ø­Ù„Ù‡ : ${student['age_group'] ?? ''}',
+                        'المرحله : ${student['age_group'] ?? ''}',
                         style: const TextStyle(color: Colors.black45, fontSize: 13),
                       ),
                     ],
@@ -111,7 +111,7 @@ class StudentDetailView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Ø¹ÙˆØ¯Ø©',
+                          'عودة',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 16,
@@ -129,33 +129,33 @@ class StudentDetailView extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // ÙƒØ±ÙˆØª Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ÙˆØ§Ù„Ø­Ø¶ÙˆØ±
+          // كروت البيانات والحضور
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. ÙƒØ§Ø±Øª Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ù„Ù…ÙˆØ§Ø¯ (Ø¬Ù‡Ø© Ø§Ù„ÙŠÙ…ÙŠÙ†)
+              // 1. كارت البيانات الأساسية والمواد (جهة اليمين)
               Expanded(
                 child: _buildCard(
-                  title: 'Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©',
+                  title: 'البيانات الأساسية',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø·Ø§Ù„Ø¨
+                      // رقم ولي الطالب
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Ø±Ù‚Ù… ÙˆÙ„ÙŠ Ø§Ù„Ø·Ø§Ù„Ø¨:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('رقم ولي الطالب:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           Text(student['parent_phone'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                         ],
                       ),
                       const SizedBox(height: 16),
 
-                      // Ø§Ù„Ù…ÙˆØ§Ø¯
+                      // المواد
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Ø§Ù„Ù…ÙˆØ§Ø¯:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('المواد:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Directionality(
@@ -174,12 +174,12 @@ class StudentDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // Ù…Ù„Ø§Ø­Ø¸Ø© Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³
+                      // ملاحظة من المدرس
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Ù…Ù„Ø§Ø­Ø¸Ù‡ Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text('ملاحظه من المدرس:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -196,23 +196,23 @@ class StudentDetailView extends StatelessWidget {
               ),
               const SizedBox(width: 20),
 
-              // 2. ÙƒØ§Ø±Øª Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨ (Ø¬Ù‡Ø© Ø§Ù„ÙŠØ³Ø§Ø±)
+              // 2. كارت الحضور والغياب (جهة اليسار)
               Expanded(
                 child: _buildCard(
-                  title: 'Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„ØºÙŠØ§Ø¨',
+                  title: 'الحضور والغياب',
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildCountColumn(
                         context: context,
-                        label: 'ØºÙÙŠØ§Ø¨',
+                        label: 'غياب',
                         value: '$absentCount',
                         isPresent: false,
                         student: student,
                       ),
                       _buildCountColumn(
                         context: context,
-                        label: 'Ø­Ø¶ÙˆØ±',
+                        label: 'حضور',
                         value: '$presentCount',
                         isPresent: true,
                         student: student,
@@ -233,10 +233,10 @@ class StudentDetailView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø­Ø°Ù', textAlign: TextAlign.right),
-        content: const Text('Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ø·Ø§Ù„Ø¨ Ù†Ù‡Ø§Ø¦ÙŠØ§Ù‹ Ù…Ù† Ø§Ù„Ù†Ø¸Ø§Ù…ØŸ'),
+        title: const Text('تأكيد الحذف', textAlign: TextAlign.right),
+        content: const Text('هل أنت متأكد من حذف هذا الطالب نهائياً من النظام؟'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Ø¥Ù„ØºØ§Ø¡')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
@@ -244,11 +244,11 @@ class StudentDetailView extends StatelessWidget {
               final success = await provider.deleteStudent(studentId);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? 'ØªÙ… Ø­Ø°Ù Ø§Ù„Ø·Ø§Ù„Ø¨ Ø¨Ù†Ø¬Ø§Ø­' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­Ø°Ù')),
+                  SnackBar(content: Text(success ? 'تم حذف الطالب بنجاح' : 'حدث خطأ أثناء الحذف')),
                 );
               }
             },
-            child: const Text('Ù†Ø¹Ù…ØŒ Ø¥Ø­Ø°Ù', style: TextStyle(color: Colors.white)),
+            child: const Text('نعم، إحذف', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -259,7 +259,7 @@ class StudentDetailView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        // Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¯Ø±Ø¬Ø© Ø£Ø²Ø±Ù‚ Ø®ÙÙŠÙØ© ÙˆÙ‡Ø§Ø¯Ø¦Ø© Ù…Ø¹ Ø§Ù†Ø­Ù†Ø§Ø¡ Ø®ÙÙŠÙ ÙˆØ¨ÙˆØ±Ø¯Ø± Ù„Ø·ÙŠÙ
+        // استخدام درجة أزرق خفيفة وهادئة مع انحناء خفيف وبوردر لطيف
         color: const Color(0xFF724F96),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -313,7 +313,7 @@ class StudentDetailView extends StatelessWidget {
             children: [
               Icon(Icons.touch_app_rounded, size: 11, color: Colors.grey.shade400),
               const SizedBox(width: 3),
-              Text('Ø§Ø¶ØºØ· Ù„Ù„ØªÙØ§ØµÙŠÙ„', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+              Text('اضغط للتفاصيل', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
             ],
           ),
         ],
@@ -321,4 +321,3 @@ class StudentDetailView extends StatelessWidget {
     );
   }
 }
-

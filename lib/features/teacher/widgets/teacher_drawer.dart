@@ -39,7 +39,7 @@ class TeacherDrawer extends StatelessWidget {
                       ),
                     ),
                     const Text(
-                      'Ù…Ø¹Ù„Ù…',
+                      'معلم',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -66,7 +66,7 @@ class TeacherDrawer extends StatelessWidget {
 
             // Drawer Items
             _buildDrawerItem(
-              title: 'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„ÙŠÙˆÙ…ÙŠØ©',
+              title: 'سجل التقييمات اليومية',
               icon: Icons.calendar_today_rounded,
               onTap: () {
                 Navigator.of(context).pop();
@@ -78,7 +78,7 @@ class TeacherDrawer extends StatelessWidget {
               },
             ),
             _buildDrawerItem(
-              title: 'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
+              title: 'سجل التقييمات الأسبوعية',
               icon: Icons.date_range_rounded,
               onTap: () {
                 Navigator.of(context).pop();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/admin_provider.dart';
 import '../widgets/stat_card.dart';
+import '../constants/app_strings.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardOverviewView extends StatefulWidget {
@@ -13,71 +14,114 @@ class DashboardOverviewView extends StatefulWidget {
 }
 
 class _DashboardOverviewViewState extends State<DashboardOverviewView> {
-  int _complaintsCount = 0;
-  int _unreadComplaints = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchComplaintsCount();
-  }
-
-  Future<void> _fetchComplaintsCount() async {
-    try {
-      final supabase = Supabase.instance.client;
-      
-      // عدد إجمالي الشكاوى
-      final totalResult = await supabase
-          .from('complaints')
-          .select('id');
-      
-      // عدد الشكاوى غير المقروءة
-      final unreadResult = await supabase
-          .from('complaints')
-          .select('id')
-          .eq('is_read', false);
-
-      if (mounted) {
-        setState(() {
-          _complaintsCount = (totalResult as List).length;
-          _unreadComplaints = (unreadResult as List).length;
-        });
-      }
-    } catch (e) {
-      debugPrint('خطأ في جلب عدد الشكاوى: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            StatCard(title: 'إجمالي الطلاب', count: '${widget.provider.totalStudents}'),
-            const SizedBox(width: 16),
-            StatCard(title: 'المدرسين', count: '${widget.provider.totalTeachers}'),
-            const SizedBox(width: 16),
-            StatCard(title: 'نسبة الحضور', count: widget.provider.attendancePercentage),
-            const SizedBox(width: 16),
-            GestureDetector(
-              onTap: () {
-                // الانتقال لصفحة الشكاوى
-                widget.provider.setNavIndex(4);
-              },
-              child: StatCard(
-                title: 'الشكاوى',
-                count: '$_complaintsCount',
-                subtitle: _unreadComplaints > 0 ? '$_unreadComplaints جديد' : null,
-                color: _unreadComplaints > 0 ? Colors.orange : null,
-              ),
-            ),
-          ],
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 768;
+          final isTablet = constraints.maxWidth > 600;
+          
+          return StreamBuilder<List<dynamic>>(
+            stream: Supabase.instance.client
+                .from('complaints')
+                .stream(primaryKey: ['id']),
+            builder: (context, complaintsSnapshot) {
+              final totalComplaints = complaintsSnapshot.hasData ? complaintsSnapshot.data!.length : 0;
+              
+              return StreamBuilder<List<dynamic>>(
+                stream: Supabase.instance.client
+                    .from('complaints')
+                    .stream(primaryKey: ['id'])
+                    .eq('is_read', false),
+                builder: (context, unreadSnapshot) {
+                  final unreadComplaints = unreadSnapshot.hasData ? unreadSnapshot.data!.length : 0;
+                  
+                  if (isDesktop) {
+                    // Desktop Layout - 4 cards in a row
+                    return Align(
+                      alignment: Alignment.topRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StatCard(title: AppStrings.totalStudents, count: '${widget.provider.totalStudents}'),
+                          const SizedBox(width: 16),
+                          StatCard(title: AppStrings.totalTeachers, count: '${widget.provider.totalTeachers}'),
+                          const SizedBox(width: 16),
+                          StatCard(title: AppStrings.attendanceRate, count: widget.provider.attendancePercentage),
+                          const SizedBox(width: 16),
+                          GestureDetector(
+                            onTap: () => widget.provider.setNavIndex(4),
+                            child: StatCard(
+                              title: AppStrings.complaintsCount,
+                              count: '$totalComplaints',
+                              subtitle: unreadComplaints > 0 ? '$unreadComplaints ${AppStrings.newComplaint}' : null,
+                              color: unreadComplaints > 0 ? Colors.orange : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (isTablet) {
+                    // Tablet Layout - 2x2 grid
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(child: StatCard(title: AppStrings.totalStudents, count: '${widget.provider.totalStudents}')),
+                            const SizedBox(width: 16),
+                            Expanded(child: StatCard(title: AppStrings.totalTeachers, count: '${widget.provider.totalTeachers}')),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(child: StatCard(title: AppStrings.attendanceRate, count: widget.provider.attendancePercentage)),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => widget.provider.setNavIndex(4),
+                                child: StatCard(
+                                  title: AppStrings.complaintsCount,
+                                  count: '$totalComplaints',
+                                  subtitle: unreadComplaints > 0 ? '$unreadComplaints ${AppStrings.newComplaint}' : null,
+                                  color: unreadComplaints > 0 ? Colors.orange : null,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  } else {
+                    // Mobile Layout - Single column
+                    return Column(
+                      children: [
+                        StatCard(title: AppStrings.totalStudents, count: '${widget.provider.totalStudents}'),
+                        const SizedBox(height: 16),
+                        StatCard(title: AppStrings.totalTeachers, count: '${widget.provider.totalTeachers}'),
+                        const SizedBox(height: 16),
+                        StatCard(title: AppStrings.attendanceRate, count: widget.provider.attendancePercentage),
+                        const SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: () => widget.provider.setNavIndex(4),
+                          child: StatCard(
+                            title: AppStrings.complaintsCount,
+                            count: '$totalComplaints',
+                            subtitle: unreadComplaints > 0 ? '$unreadComplaints ${AppStrings.newComplaint}' : null,
+                            color: unreadComplaints > 0 ? Colors.orange : null,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

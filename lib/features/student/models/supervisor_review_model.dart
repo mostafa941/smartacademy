@@ -1,4 +1,4 @@
-class SupervisorReviewModel {
+﻿class SupervisorReviewModel {
   final String id;
   final String studentId;
   final DateTime reviewDate;

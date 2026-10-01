@@ -1,6 +1,7 @@
 ﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_strings.dart';
 import '../providers/admin_provider.dart';
 import '../widgets/add_student_modal.dart';
 
@@ -27,7 +28,7 @@ class StudentsView extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.add, color: Colors.white, size: 18),
                 label: const Text(
-                  'إضافة طالب جديد',
+                  AppStrings.addNewStudent,
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
@@ -44,7 +45,7 @@ class StudentsView extends StatelessWidget {
                   child: TextField(
                     onChanged: (val) => provider.setSearchQuery(val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث بأسم الطالب او رقم الهاتف...',
+                      hintText: AppStrings.searchStudents,
                       hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
                       fillColor: Colors.white,
                       filled: true,
@@ -75,18 +76,18 @@ class StudentsView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       child: Row(
                         children: const [
-                          Expanded(flex: 2, child: Text('اسم الطالب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 1, child: Text('الفئة العمرية', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 2, child: Text('رقم ولي الأمر الطالب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 2, child: Text('الحضور والغياب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                          Expanded(flex: 1, child: Text('الأجراءات', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text(AppStrings.studentName, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 1, child: Text(AppStrings.ageGroup, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text(AppStrings.parentPhone, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 2, child: Text(AppStrings.attendanceStatus, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                          Expanded(flex: 1, child: Text(AppStrings.actions, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
                         ],
                       ),
                     ),
                     if (provider.filteredStudents.isEmpty)
                       const Padding(
                         padding: EdgeInsets.all(32.0),
-                        child: Center(child: Text('لا توجد نتائج مطابقة للبحث')),
+                        child: Center(child: Text(AppStrings.noResultsFound)),
                       )
                     else
                       ...provider.filteredStudents.map((student) {
@@ -130,14 +131,14 @@ class StudentsView extends StatelessWidget {
                                 flex: 1,
                                 child: OutlinedButton(
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFE6E6FA),
+                                    backgroundColor: const Color(0xFFE6E6FA), 
                                     side: BorderSide.none,
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                   ),
                                   onPressed: () {
                                     provider.selectStudent(student);
                                   },
-                                  child: const Text('فتح الملف', style: TextStyle(color: Colors.black87, fontSize: 12)),
+                                  child: const Text(AppStrings.openFile, style: TextStyle(color: Colors.black87, fontSize: 12)),
                                 ),
                               ),
                             ],

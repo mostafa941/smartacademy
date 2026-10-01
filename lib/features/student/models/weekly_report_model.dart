@@ -1,4 +1,4 @@
-class WeeklyReportModel {
+﻿class WeeklyReportModel {
   final String id;
   final String studentId;
   final DateTime createdAt;

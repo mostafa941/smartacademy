@@ -338,8 +338,8 @@ class _StudentNotesTabState extends State<StudentNotesTab>
                   labelStyle: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 14),
                   tabs: const [
-                    Tab(text: 'ÙŠÙˆÙ…ÙŠØ©'),
-                    Tab(text: 'Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©'),
+                    Tab(text: 'يومية'),
+                    Tab(text: 'أسبوعية'),
                   ],
                 ),
               ),
@@ -458,7 +458,7 @@ class _DailyView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        isToday ? 'Ø§Ù„ÙŠÙˆÙ…' : 'ØªØ§Ø±ÙŠØ® Ù…Ø­Ø¯Ø¯',
+                        isToday ? 'اليوم' : 'تاريخ محدد',
                         style: const TextStyle(
                             color: Colors.white70, fontSize: 11),
                       ),
@@ -526,7 +526,7 @@ class _DailyView extends StatelessWidget {
           Icon(Icons.star_border_rounded, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ù„Ù‡Ø°Ø§ Ø§Ù„ÙŠÙˆÙ…',
+            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ù„Ù‡Ø°Ø§ اليوم',
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.bold,
@@ -535,7 +535,7 @@ class _DailyView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ø§Ø®ØªØ± ÙŠÙˆÙ…Ø§Ù‹ Ø¢Ø®Ø± Ù„Ø¹Ø±Ø¶ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
+            'اختر يوماً آخر لعرض التقييمات',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -584,7 +584,7 @@ class _DailyView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      teacherName ?? 'Ø§Ù„Ù…Ø¯Ø±Ø³',
+                      teacherName ?? 'المدرس',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 16,
@@ -658,7 +658,7 @@ class _DailyView extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… Ø§Ù„ÙŠÙˆÙ…ÙŠ',
+                    'Ø§Ù„ØªÙ‚ÙŠÙŠÙ… اليومÙŠ',
                     style: TextStyle(
                       color: textColor,
                       fontSize: 15,
@@ -1079,7 +1079,7 @@ class _WeeklyView extends StatelessWidget {
               size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
+            'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª أسبوعية',
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.bold,
@@ -1125,7 +1125,7 @@ class _WeeklyView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      report.teacherName ?? 'Ø§Ù„Ù…Ø¯Ø±Ø³',
+                      report.teacherName ?? 'المدرس',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 16,

@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+﻿import 'package:shared_preferences/shared_preferences.dart';
 
 /// خدمة إدارة جلسة المستخدم باستخدام SharedPreferences
 /// تحفظ بيانات المستخدم محليًا لتذكر تسجيل الدخول بين الجلسات

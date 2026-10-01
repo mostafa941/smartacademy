@@ -71,8 +71,8 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
 
     final months = [
-      '', 'ÙŠÙ†Ø§ÙŠØ±', 'ÙØ¨Ø±Ø§ÙŠØ±', 'Ù…Ø§Ø±Ø³', 'Ø£Ø¨Ø±ÙŠÙ„', 'Ù…Ø§ÙŠÙˆ', 'ÙŠÙˆÙ†ÙŠÙˆ',
-      'ÙŠÙˆÙ„ÙŠÙˆ', 'Ø£ØºØ³Ø·Ø³', 'Ø³Ø¨ØªÙ…Ø¨Ø±', 'Ø£ÙƒØªÙˆØ¨Ø±', 'Ù†ÙˆÙÙ…Ø¨Ø±', 'Ø¯ÙŠØ³Ù…Ø¨Ø±'
+      '', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
     ];
 
     return '${startOfWeek.day} ${months[startOfWeek.month]} - ${endOfWeek.day} ${months[endOfWeek.month]}';
@@ -80,22 +80,22 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
 
   String _weekLabel(int week) {
     const ordinals = [
-      '', 'Ø§Ù„Ø£ÙˆÙ„', 'Ø§Ù„Ø«Ø§Ù†ÙŠ', 'Ø§Ù„Ø«Ø§Ù„Ø«', 'Ø§Ù„Ø±Ø§Ø¨Ø¹', 'Ø§Ù„Ø®Ø§Ù…Ø³',
-      'Ø§Ù„Ø³Ø§Ø¯Ø³', 'Ø§Ù„Ø³Ø§Ø¨Ø¹', 'Ø§Ù„Ø«Ø§Ù…Ù†', 'Ø§Ù„ØªØ§Ø³Ø¹', 'Ø§Ù„Ø¹Ø§Ø´Ø±',
-      'Ø§Ù„Ø­Ø§Ø¯ÙŠ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù†ÙŠ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù„Ø« Ø¹Ø´Ø±', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø®Ø§Ù…Ø³ Ø¹Ø´Ø±',
-      'Ø§Ù„Ø³Ø§Ø¯Ø³ Ø¹Ø´Ø±', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø«Ø§Ù…Ù† Ø¹Ø´Ø±', 'Ø§Ù„ØªØ§Ø³Ø¹ Ø¹Ø´Ø±', 'Ø§Ù„Ø¹Ø´Ø±ÙˆÙ†',
-      'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†',
-      'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†',
-      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø¹Ø´Ø±ÙˆÙ†', 'Ø§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
-      'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
-      'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†',
-      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø«Ù„Ø§Ø«ÙˆÙ†', 'Ø§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
-      'Ø§Ù„Ø«Ø§Ù„Ø« ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø±Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø®Ø§Ù…Ø³ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
-      'Ø§Ù„Ø³Ø§Ø¯Ø³ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø³Ø§Ø¨Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù…Ù† ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†',
-      'Ø§Ù„ØªØ§Ø³Ø¹ ÙˆØ§Ù„Ø£Ø±Ø¨Ø¹ÙˆÙ†', 'Ø§Ù„Ø®Ù…Ø³ÙˆÙ†', 'Ø§Ù„Ø­Ø§Ø¯ÙŠ ÙˆØ§Ù„Ø®Ù…Ø³ÙˆÙ†', 'Ø§Ù„Ø«Ø§Ù†ÙŠ ÙˆØ§Ù„Ø®Ù…Ø³ÙˆÙ†',
+      '', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس',
+      'السادس', 'السابع', 'الثامن', 'التاسع', 'العاشر',
+      'الحادي عشر', 'الثاني عشر', 'الثالث عشر', 'الرابع عشر', 'الخامس عشر',
+      'السادس عشر', 'السابع عشر', 'الثامن عشر', 'التاسع عشر', 'العشرون',
+      'الحادي والعشرون', 'الثاني والعشرون', 'الثالث والعشرون', 'الرابع والعشرون',
+      'الخامس والعشرون', 'السادس والعشرون', 'السابع والعشرون', 'الثامن والعشرون',
+      'التاسع والعشرون', 'الثلاثون', 'الحادي والثلاثون', 'الثاني والثلاثون',
+      'الثالث والثلاثون', 'الرابع والثلاثون', 'الخامس والثلاثون',
+      'السادس والثلاثون', 'السابع والثلاثون', 'الثامن والثلاثون',
+      'التاسع والثلاثون', 'الأربعون', 'الحادي والأربعون', 'الثاني والأربعون',
+      'الثالث والأربعون', 'الرابع والأربعون', 'الخامس والأربعون',
+      'السادس والأربعون', 'السابع والأربعون', 'الثامن والأربعون',
+      'التاسع والأربعون', 'الخمسون', 'الحادي والخمسون', 'الثاني والخمسون',
     ];
-    if (week < 1 || week >= ordinals.length) return 'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ $week';
-    return 'Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ ${ordinals[week]}';
+    if (week < 1 || week >= ordinals.length) return 'الأسبوع $week';
+    return 'الأسبوع ${ordinals[week]}';
   }
 
   @override
@@ -119,7 +119,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Ø³Ø¬Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
+          'سجل التقييمات الأسبوعية',
           style: TextStyle(
             color: textColor,
             fontSize: 20,
@@ -199,7 +199,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                               Icon(Icons.expand_more_rounded, color: Colors.white, size: 18),
                               SizedBox(width: 6),
                               Text(
-                                'Ø§Ø®ØªØ± Ø£Ø³Ø¨ÙˆØ¹',
+                                'اختر أسبوع',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -253,7 +253,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${_reports.length} ØªÙ‚ÙŠÙŠÙ…',
+                    '${_reports.length} تقييم',
                     style: const TextStyle(
                       color: Color(0xFF724F96),
                       fontWeight: FontWeight.bold,
@@ -262,7 +262,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                   ),
                 ),
                 Text(
-                  'Ø§Ù„ØªÙ‚ÙŠÙŠÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠØ©',
+                  'التقييمات الأسبوعية',
                   style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.bold,
@@ -315,7 +315,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Ø§Ø®ØªØ± Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
+              'اختر الأسبوع',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -362,7 +362,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           Icon(Icons.date_range_rounded, size: 80, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙ‚ÙŠÙŠÙ…Ø§Øª ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
+            'لا توجد تقييمات في هذا الأسبوع',
             style: TextStyle(
               color: textColor,
               fontSize: 16,
@@ -371,7 +371,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ø§Ø®ØªØ± Ø£Ø³Ø¨ÙˆØ¹Ø§Ù‹ Ø¢Ø®Ø± Ø£Ùˆ Ù‚Ù… Ø¨Ø¥Ø¶Ø§ÙØ© ØªÙ‚ÙŠÙŠÙ…Ø§Øª',
+            'اختر أسبوعاً آخر أو قم بإضافة تقييمات',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -381,7 +381,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
 
   Widget _buildWeeklyCard(Map<String, dynamic> report, {required Color cardColor, required Color textColor}) {
     final student = report['students'] as Map<String, dynamic>?;
-    final studentName = student?['full_name'] ?? 'Ø·Ø§Ù„Ø¨ ØºÙŠØ± Ù…Ø¹Ø±ÙˆÙ';
+    final studentName = student?['full_name'] ?? 'طالب غير معروف';
     final ageGroup = student?['age_group'] ?? '';
     final initial = studentName.isNotEmpty ? studentName[0] : '?';
     final photoUrl = student?['photo_url'] as String?;
@@ -430,7 +430,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      completedDuties ? 'Ø£ÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª' : 'Ù„Ù… ÙŠÙƒÙ…Ù„ Ø§Ù„ÙˆØ§Ø¬Ø¨Ø§Øª',
+                      completedDuties ? 'أكمل الواجبات' : 'لم يكمل الواجبات',
                       style: TextStyle(
                         color: completedDuties ? Colors.green.shade700 : Colors.orange.shade700,
                         fontWeight: FontWeight.bold,
@@ -495,7 +495,7 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
                 ),
                 const SizedBox(width: 8),
                 const Text(
-                  'Ø§Ù„Ø¯Ø±ÙˆØ³ Ø§Ù„Ù…Ù†Ø¬Ø²Ø©:',
+                  'الدروس المنجزة:',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 12,
@@ -537,4 +537,3 @@ class _WeeklyReportsScreenState extends State<WeeklyReportsScreen> {
     );
   }
 }
-

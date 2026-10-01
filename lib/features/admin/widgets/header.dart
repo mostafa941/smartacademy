@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../providers/admin_provider.dart';
+import '../constants/app_strings.dart';
 
 class HeaderWidget extends StatefulWidget {
   final AdminProvider provider;
@@ -107,17 +108,17 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   String _getTitleByIndex(int index) {
     switch (index) {
       case 0:
-        return 'لوحة التحكم الرئيسية';
+        return AppStrings.dashboardTitle;
       case 1:
-        return 'إدارة الطلاب';
+        return AppStrings.studentsManagement;
       case 2:
-        return 'إدارة المدرسين';
+        return AppStrings.teachersManagement;
       case 3:
-        return 'الإعدادات';
+        return AppStrings.settings;
       case 4:
-        return 'الشكاوي';
+        return AppStrings.complaints;
       default:
-        return 'لوحة التحكم';
+        return AppStrings.dashboardControl;
     }
   }
 
@@ -144,23 +145,35 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('الإشعارات', style: TextStyle(fontSize: 18)),
-              if (_unreadNotifications > 0)
-                TextButton(
-                  onPressed: () {
-                    _markAllAsRead();
-                    Navigator.pop(context);
-                  },
-                  child: const Text('تعليم الكل كمقروء', style: TextStyle(fontSize: 11)),
-                ),
+              StreamBuilder<List<dynamic>>(
+                stream: _supabase
+                    .from('admin_notifications')
+                    .stream(primaryKey: ['id'])
+                    .eq('is_read', false)
+                    .order('created_at', ascending: false),
+                builder: (context, snapshot) {
+                  final hasUnread = snapshot.hasData && snapshot.data!.isNotEmpty;
+                  if (hasUnread) {
+                    return TextButton(
+                      onPressed: () {
+                        _markAllAsRead();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('تعليم الكل كمقروء', style: TextStyle(fontSize: 11)),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ],
           ),
           content: SizedBox(
             width: 450,
             height: 350,
-            child: FutureBuilder(
-              future: _supabase
+            child: StreamBuilder<List<dynamic>>(
+              stream: _supabase
                   .from('admin_notifications')
-                  .select()
+                  .stream(primaryKey: ['id'])
                   .order('created_at', ascending: false)
                   .limit(15),
               builder: (context, snapshot) {
@@ -170,7 +183,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   );
                 }
 
-                if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +196,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   );
                 }
 
-                final notifications = snapshot.data as List;
+                final notifications = snapshot.data!;
                 return ListView.builder(
                   itemCount: notifications.length,
                   itemBuilder: (context, index) {
@@ -288,12 +301,14 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            _getTitleByIndex(widget.provider.selectedNavIndex),
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          Expanded(
+            child: Text(
+              _getTitleByIndex(widget.provider.selectedNavIndex),
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ),
           Row(
@@ -306,42 +321,53 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 ),
               ),
               const SizedBox(width: 20),
-              // Notifications Bell
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined, size: 26),
-                    color: Colors.black87,
-                    tooltip: 'الإشعارات',
-                    onPressed: () => _showNotificationsDialog(context),
-                  ),
-                  if (_unreadNotifications > 0)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 18,
-                          minHeight: 18,
-                        ),
-                        child: Text(
-                          _unreadNotifications > 9 ? '9+' : '$_unreadNotifications',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+              // Notifications Bell with Real-time Updates
+              StreamBuilder<List<dynamic>>(
+                stream: _supabase
+                    .from('admin_notifications')
+                    .stream(primaryKey: ['id'])
+                    .eq('is_read', false)
+                    .order('created_at', ascending: false),
+                builder: (context, snapshot) {
+                  final unreadCount = snapshot.hasData ? snapshot.data!.length : 0;
+                  
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined, size: 26),
+                        color: Colors.black87,
+                        tooltip: AppStrings.notifications,
+                        onPressed: () => _showNotificationsDialog(context),
                       ),
-                    ),
-                ],
+                      if (unreadCount > 0)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 18,
+                              minHeight: 18,
+                            ),
+                            child: Text(
+                              unreadCount > 9 ? '9+' : '$unreadCount',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
             ],
           ),

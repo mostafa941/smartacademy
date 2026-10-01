@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_strings.dart';
 import '../providers/admin_provider.dart';
 import '../screens/admin_login_screen.dart';
 
@@ -45,7 +46,7 @@ class SidebarWidget extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  provider.adminName.isEmpty ? 'مدير النظام' : provider.adminName,
+                  provider.adminName.isEmpty ? AppStrings.systemAdmin : provider.adminName,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -54,7 +55,7 @@ class SidebarWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  provider.adminDescription.isEmpty ? 'الأدمن الرئيسي' : provider.adminDescription,
+                  provider.adminDescription.isEmpty ? AppStrings.mainAdmin : provider.adminDescription,
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                 ),
               ],
@@ -63,31 +64,31 @@ class SidebarWidget extends StatelessWidget {
           const SizedBox(height: 32),
           _buildNavItem(
             icon: Icons.tune,
-            title: 'لوحة التحكم',
+            title: AppStrings.controlPanel,
             isSelected: provider.selectedNavIndex == 0,
             onTap: () => provider.setNavIndex(0),
           ),
           _buildNavItem(
             icon: Icons.school_outlined,
-            title: 'الطلاب',
+            title: AppStrings.students,
             isSelected: provider.selectedNavIndex == 1,
             onTap: () => provider.setNavIndex(1),
           ),
           _buildNavItem(
             icon: Icons.co_present_outlined,
-            title: 'المدرسين',
+            title: AppStrings.teachers,
             isSelected: provider.selectedNavIndex == 2,
             onTap: () => provider.setNavIndex(2),
           ),
           _buildNavItem(
             icon: Icons.settings_outlined,
-            title: 'الإعدادات',
+            title: AppStrings.settings,
             isSelected: provider.selectedNavIndex == 3,
             onTap: () => provider.setNavIndex(3),
           ),
           _buildNavItem(
             icon: Icons.report_problem_outlined,
-            title: 'الشكاوي',
+            title: AppStrings.complaints,
             isSelected: provider.selectedNavIndex == 4,
             onTap: () => provider.setNavIndex(4),
           ),
@@ -118,7 +119,7 @@ class SidebarWidget extends StatelessWidget {
                   Icon(Icons.logout, color: Colors.redAccent, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    'تسجيل الخروج',
+                    AppStrings.logout,
                     style: TextStyle(color: Colors.redAccent, fontSize: 16),
                   ),
                 ],
