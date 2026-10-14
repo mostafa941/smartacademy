@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
 
@@ -31,7 +31,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(24.0),
       child: Center(
         child: Container(

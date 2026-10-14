@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -434,6 +434,79 @@ class AdminProvider extends ChangeNotifier {
 
     if (studentReports.isEmpty) return 'لا يوجد';
     return studentReports.last['note'].toString();
+  }
+
+  /// جلب تقييمات وملاحظات جميع المدرسين لهذا الطالب بالتكامل مع بيانات المدرس والمادة
+  List<Map<String, dynamic>> getStudentTeacherEvaluations(dynamic studentId) {
+    final studentReports = _dailyReports
+        .where((r) => r['student_id'] == studentId)
+        .toList();
+
+    // فرز من الأحدث إلى الأقدم
+    studentReports.sort((a, b) {
+      final dateA = (a['report_date'] ?? a['date'] ?? a['created_at'] ?? '').toString();
+      final dateB = (b['report_date'] ?? b['date'] ?? b['created_at'] ?? '').toString();
+      return dateB.compareTo(dateA);
+    });
+
+    final List<Map<String, dynamic>> evaluations = [];
+
+    for (final report in studentReports) {
+      final teacherId = report['teacher_id'];
+      final teacher = _teachers.firstWhere(
+        (t) => t['id'] == teacherId,
+        orElse: () => <String, dynamic>{},
+      );
+
+      final String teacherName = (teacher['full_name'] ?? 'مدرس غير محدد').toString();
+      final String? avatarUrl = teacher['avatar_url']?.toString();
+      final String subject = (teacher['subject'] ?? 'غير محدد').toString();
+      final String note = (report['note'] ?? '').toString().trim();
+      final int stars = report['stars'] is int
+          ? report['stars']
+          : int.tryParse(report['stars']?.toString() ?? '0') ?? 0;
+      final String date = (report['report_date'] ?? report['date'] ?? report['created_at'] ?? '')
+          .toString()
+          .split('T')
+          .first;
+      final bool isPresent = report['attendance'] == true || report['status'] == 'present';
+
+      evaluations.add({
+        'report_id': report['id'],
+        'teacher_id': teacherId,
+        'teacher_name': teacherName,
+        'teacher_avatar': avatarUrl,
+        'subject': subject,
+        'note': note.isNotEmpty ? note : 'بدون ملاحظات',
+        'stars': stars,
+        'date': date,
+        'is_present': isPresent,
+        'ate_meal': report['ate_meal'],
+        'took_break': report['took_break'],
+        'raw': report,
+      });
+    }
+
+    return evaluations;
+  }
+
+  /// تحديث وجلب أحدث تقييمات الطالب من السيرفر مباشرة
+  Future<List<Map<String, dynamic>>> fetchStudentEvaluations(dynamic studentId) async {
+    try {
+      final reportsRes = await _supabase
+          .from('daily_reports')
+          .select()
+          .eq('student_id', studentId)
+          .order('created_at', ascending: false);
+
+      _dailyReports.removeWhere((r) => r['student_id'] == studentId);
+      _dailyReports.addAll(List<Map<String, dynamic>>.from(reportsRes));
+      notifyListeners();
+      return getStudentTeacherEvaluations(studentId);
+    } catch (e) {
+      debugPrint('Error fetching student evaluations: $e');
+      return getStudentTeacherEvaluations(studentId);
+    }
   }
 
   String getStudentAttendanceRate(dynamic studentId) {

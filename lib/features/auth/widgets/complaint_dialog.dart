@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ComplaintDialog extends StatefulWidget {
@@ -24,11 +24,13 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
       final supabase = Supabase.instance.client;
       
       // حفظ الشكوى في قاعدة البيانات
+      final nowUtc = DateTime.now().toUtc().toIso8601String();
       await supabase.from('complaints').insert({
         'name': _nameController.text.trim(),
         'phone': _phoneController.text.trim(),
         'complaint': _complaintController.text.trim(),
         'is_read': false,
+        'created_at': nowUtc,
       });
 
       // إرسال إشعار للأدمن في جدول admin_notifications
@@ -38,6 +40,7 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
           'message': _complaintController.text.trim(),
           'is_read': false,
           'type': 'complaint',
+          'created_at': nowUtc,
         });
         debugPrint('✅ تم إرسال شكوى جديدة وإشعار للأدمن: ${_nameController.text}');
       } catch (e) {

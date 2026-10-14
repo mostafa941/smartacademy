@@ -1,4 +1,4 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -188,6 +188,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
             'student_id': widget.studentId,
             'teacher_id': widget.teacherId,
             'report_date': todayStr,
+            'date': todayStr,
             'status': isPresent ? 'present' : 'absent',
             'attendance': isPresent,
             'note': _dailyNoteController.text.trim(),
@@ -264,6 +265,7 @@ class _StudentEvaluationScreenState extends State<StudentEvaluationScreen> {
               .from('student_reviews')
               .select('id')
               .eq('student_id', widget.studentId)
+              .eq('teacher_name', teacherName)
               .eq('review_date', todayStr)
               .maybeSingle();
 

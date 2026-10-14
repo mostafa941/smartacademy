@@ -1,8 +1,9 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_academy/features/admin/constants/app_colors.dart';
 import 'package:smart_academy/features/admin/providers/admin_provider.dart';
 import 'package:smart_academy/features/admin/widgets/edit_student_modal.dart';
+import 'package:smart_academy/features/admin/widgets/teacher_evaluations_modal.dart';
 import 'package:smart_academy/views/student_attendance_days_view.dart';
 
 class StudentDetailView extends StatelessWidget {
@@ -18,6 +19,7 @@ class StudentDetailView extends StatelessWidget {
     final presentCount = provider.getStudentPresentCount(student['id']);
     final absentCount = provider.getStudentAbsentCount(student['id']);
     final teacherNote = provider.getStudentLatestNote(student['id']);
+    final teacherEvaluations = provider.getStudentTeacherEvaluations(student['id']);
 
     final List<String> subjects = List<String>.from(
       student['subjects'] ?? [
@@ -31,7 +33,8 @@ class StudentDetailView extends StatelessWidget {
       ],
     );
 
-    return Padding(
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,99 +133,246 @@ class StudentDetailView extends StatelessWidget {
           const SizedBox(height: 24),
 
           // كروت البيانات والحضور
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. كارت البيانات الأساسية والمواد (جهة اليمين)
-              Expanded(
-                child: _buildCard(
-                  title: 'البيانات الأساسية',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // رقم ولي الطالب
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('رقم ولي الطالب:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
-                          Text(student['parent_phone'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 750;
 
-                      // المواد
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('المواد:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: Wrap(
-                                spacing: 8,
-                                runSpacing: 6,
-                                alignment: WrapAlignment.start,
-                                children: subjects
-                                    .map((sub) => Text(sub, style: const TextStyle(fontWeight: FontWeight.bold)))
-                                    .toList(),
+              // 1. كارت البيانات الأساسية والمواد
+              final basicInfoCard = _buildCard(
+                title: 'البيانات الأساسية',
+                onTap: () => _showTeacherEvaluations(context, student),
+                headerTrailing: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white30),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.touch_app_rounded, color: Colors.white, size: 13),
+                      SizedBox(width: 4),
+                      Text(
+                        'عرض تقييمات المدرسين',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // رقم ولي الطالب
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('رقم ولي الطالب:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                        Text(student['parent_phone'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // المواد
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('المواد:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              alignment: WrapAlignment.start,
+                              children: subjects
+                                  .map((sub) => Text(sub, style: const TextStyle(fontWeight: FontWeight.bold)))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ملاحظة من المدرس
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('ملاحظه من المدرس:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                            if (teacherEvaluations.isNotEmpty) ...[
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF724F96).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  '${teacherEvaluations.length} تقييم',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF724F96),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                teacherNote,
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              if (teacherEvaluations.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 6,
+                                  children: teacherEvaluations.take(3).map((e) {
+                                    final String name = e['teacher_name'] ?? '';
+                                    final String initial = name.isNotEmpty ? name.trim()[0] : 'م';
+                                    final String? avatar = e['teacher_avatar'];
+                                    final String sub = e['subject'] ?? '';
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: Colors.grey.shade300),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 11,
+                                            backgroundColor: const Color(0xFF724F96),
+                                            backgroundImage: avatar != null && avatar.isNotEmpty
+                                                ? CachedNetworkImageProvider(avatar)
+                                                : null,
+                                            child: avatar == null || avatar.isEmpty
+                                                ? Text(
+                                                    initial,
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  )
+                                                : null,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Flexible(
+                                            child: Text(
+                                              '$name (${sub.isNotEmpty ? sub : "مادة"})',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey.shade800,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(height: 6),
+                           
+                              ],
+                            ],
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
 
-                      // ملاحظة من المدرس
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('ملاحظه من المدرس:', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              teacherNote,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                            ),
-                          ),
-                        ],
+                    // زر فتح تقييمات المدرسين
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF724F96),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          elevation: 1,
+                        ),
+                        icon: const Icon(Icons.people_alt_outlined, size: 18),
+                        label: Text(
+                          teacherEvaluations.isNotEmpty
+                              ? 'عرض جميع تقييمات المدرسين (${teacherEvaluations.length})'
+                              : 'عرض تقييمات وملاحظات المدرسين',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                        onPressed: () => _showTeacherEvaluations(context, student),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 20),
+              );
 
-              // 2. كارت الحضور والغياب (جهة اليسار)
-              Expanded(
-                child: _buildCard(
-                  title: 'الحضور والغياب',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildCountColumn(
-                        context: context,
-                        label: 'غياب',
-                        value: '$absentCount',
-                        isPresent: false,
-                        student: student,
-                      ),
-                      _buildCountColumn(
-                        context: context,
-                        label: 'حضور',
-                        value: '$presentCount',
-                        isPresent: true,
-                        student: student,
-                      ),
-                    ],
-                  ),
+              // 2. كارت الحضور والغياب
+              final attendanceCard = _buildCard(
+                title: 'الحضور والغياب',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildCountColumn(
+                      context: context,
+                      label: 'غياب',
+                      value: '$absentCount',
+                      isPresent: false,
+                      student: student,
+                    ),
+                    _buildCountColumn(
+                      context: context,
+                      label: 'حضور',
+                      value: '$presentCount',
+                      isPresent: true,
+                      student: student,
+                    ),
+                  ],
                 ),
-              ),
+              );
 
-            ],
+              if (isNarrow) {
+                return Column(
+                  children: [
+                    basicInfoCard,
+                    const SizedBox(height: 20),
+                    attendanceCard,
+                  ],
+                );
+              }
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: basicInfoCard),
+                  const SizedBox(width: 20),
+                  Expanded(child: attendanceCard),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -255,29 +405,88 @@ class StudentDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildCard({required String title, required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        // استخدام درجة أزرق خفيفة وهادئة مع انحناء خفيف وبوردر لطيف
-        color: const Color(0xFF724F96),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-          const Divider(color: Colors.white24, height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: child,
+  Widget _buildCard({
+    required String title,
+    required Widget child,
+    VoidCallback? onTap,
+    Widget? headerTrailing,
+  }) {
+    return MouseRegion(
+      cursor: onTap != null ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF724F96),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (headerTrailing != null)
+                          Flexible(child: headerTrailing)
+                        else
+                          const SizedBox.shrink(),
+                        const SizedBox(width: 8),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(color: Colors.white24, height: 24),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onTap,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: child,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTeacherEvaluations(BuildContext context, Map<String, dynamic> student) {
+    showDialog(
+      context: context,
+      builder: (_) => TeacherEvaluationsModal(
+        provider: provider,
+        studentId: student['id'],
+        studentName: student['full_name'] ?? '',
       ),
     );
   }

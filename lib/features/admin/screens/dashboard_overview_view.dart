@@ -16,7 +16,8 @@ class DashboardOverviewView extends StatefulWidget {
 class _DashboardOverviewViewState extends State<DashboardOverviewView> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(24.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -28,7 +29,18 @@ class _DashboardOverviewViewState extends State<DashboardOverviewView> {
                 .from('complaints')
                 .stream(primaryKey: ['id']),
             builder: (context, complaintsSnapshot) {
-              final totalComplaints = complaintsSnapshot.hasData ? complaintsSnapshot.data!.length : 0;
+              final complaintsList = complaintsSnapshot.hasData
+                  ? complaintsSnapshot.data!.where((c) {
+                      if (c['created_at'] == null) return false;
+                      try {
+                        final date = DateTime.parse(c['created_at'].toString()).toUtc();
+                        return DateTime.now().toUtc().difference(date).inHours < 24;
+                      } catch (_) {
+                        return false;
+                      }
+                    }).toList()
+                  : [];
+              final totalComplaints = complaintsList.length;
               
               return StreamBuilder<List<dynamic>>(
                 stream: Supabase.instance.client
@@ -36,7 +48,18 @@ class _DashboardOverviewViewState extends State<DashboardOverviewView> {
                     .stream(primaryKey: ['id'])
                     .eq('is_read', false),
                 builder: (context, unreadSnapshot) {
-                  final unreadComplaints = unreadSnapshot.hasData ? unreadSnapshot.data!.length : 0;
+                  final unreadList = unreadSnapshot.hasData
+                      ? unreadSnapshot.data!.where((c) {
+                          if (c['created_at'] == null) return false;
+                          try {
+                            final date = DateTime.parse(c['created_at'].toString()).toUtc();
+                            return DateTime.now().toUtc().difference(date).inHours < 24;
+                          } catch (_) {
+                            return false;
+                          }
+                        }).toList()
+                      : [];
+                  final unreadComplaints = unreadList.length;
                   
                   if (isDesktop) {
                     // Desktop Layout - 4 cards in a row
